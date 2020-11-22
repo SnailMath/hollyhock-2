@@ -1,3 +1,12 @@
+This is a fork of the original hollyhock launcher by The6P4C (https://github.com/Stellaris-code/hollyhock-fork/).
+My intention is to modify it a little. I want to change the following things:
+- Exam mode: The Launcher should be disabled in exam mode to prevent cheating. (My math teacher in school wants this function) 
+             I will check the color of the battery logo to test, if the exam mode is on or off.
+- EXEC003:   I want to add the ability to run programs located in program variables. This was the function of the old "LoaderIIb", which I wrote a few month back.
+             I don't want to miss the feel of typing in programs byte per byte by hand (only if you want to) and sending them over the serial cable.
+- Strings:   I want to change a few texts in the OS, the Imaginary Unit button used to load the program should be renamed. The version text (usually "classpad II")
+             Was changed to "hollyhock" by The6P4C, I will change it to "hollyhock2" (or something similar) only after i patched the exam mode thing.
+
 # DISCLAIMER
 - I AM NOT RESPONSIBLE FOR ANY DAMAGE YOU MAY DO TO YOUR fx-CP400.  
 - I AM NOT LIABLE IF YOU BRICK OR OTHERWISE DAMAGE YOUR CALCULATOR.  
