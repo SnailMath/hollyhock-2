@@ -1,4 +1,4 @@
-This is a fork of the original hollyhock launcher by The6P4C (https://github.com/Stellaris-code/hollyhock-fork/).
+This is a __fork__ of the original hollyhock launcher by The6P4C (https://github.com/Stellaris-code/hollyhock-fork/).
 My intention is to modify it a little. I want to change the following things:
 - Exam mode: The Launcher should be disabled in exam mode to prevent cheating. (My math teacher in school wants this function) 
              I will check the color of the battery logo to test, if the exam mode is on or off.
