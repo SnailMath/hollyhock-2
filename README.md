@@ -23,7 +23,7 @@ This is by no means a finished project. Like the disclaimer says, use at your ow
 
 I (@The6P4C) have burned out *hard* on this project, and won't be maintaining it any further. These tools, patches and SDK work only for OS v02.01.2000.0000. The tools are easily updated, but the patches and SDK are **much** more difficult (and half the reason I'm so burned out).
 
-Please contact @ps100000 regarding this project.
+~~Please contact @ps100000 regarding this project.~~ If you have any questions, you can visit our discord https://discord.com/invite/fWxZXvy or comment on YouTube.
 
 ## User Guides
 1. [Patching your firmware](doc/user/patching.md)
