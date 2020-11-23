@@ -1,13 +1,22 @@
+ADDR:=80128018
+
 AS:=sh4-elf-as
 AS_FLAGS:=
 
 OBJCOPY:=sh4-elf-objcopy
 OBJCOPY_FLAGS:=-O binary
 
-all: file_loader.bin Makefile
+all: mod.part.txt Makefile
 
 clean:
-	rm -f file_loader.o file_loader.bin
+	rm -f file_loader.o file_loader.bin mod.part.txt
+
+mod.part.txt: file_loader.bin Makefile
+	echo -n "${ADDR}: '" > mod.part.txt
+	head -2 README.md| tail -1 >> mod.part.txt
+	echo "\r" >> mod.part.txt
+	xxd -ps file_loader.bin >> mod.part.txt
+	echo "\r\n\r" >> mod.part.txt
 
 file_loader.bin: file_loader.o
 	$(OBJCOPY) $(OBJCOPY_FLAGS) file_loader.o file_loader.bin
