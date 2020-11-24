@@ -8,6 +8,9 @@ This only needs to happen once to generate the required object files which will 
 
 If you'd like a local copy of the SDK documentation, run the `make docs` command. Open `sdk/doc/index.html` to view them.
 
+_I would recommend adding `export PATH="$PATH:$HOME/opt/cross/bin"` to the file .bashrc in the home directory to add the path automatically after every login._
+_I would recommend adding `export SDK_DIR="PATH-TO/hollyhock-2/sdk"` to the file .bashrc in the home directory to export the sdk dir automatically after every login._
+
 ## 2. Start your project
 Copy the contents of the `app_template/` directory to an empty folder. This will become your project's root directory.
 
