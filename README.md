@@ -16,6 +16,32 @@ My intention is to modify it a little. I want to change the following things:
 - **BY USING THESE TOOLS, YOU AGREE TO TAKE FULL RESPONSIBILITY FOR ANY DAMAGE THAT MAY OCCUR.**  
 - **YOU HAVE BEEN WARNED**
 
+# Installation (simple)
+This is how you install hollyhock-2 onto your calculator:
+- download the newest prebuild release of hollyhock-2: https://github.com/SnailMath/hollyhock-2/releases
+- extract the folder Snail2021 from the release onto the desktop.
+- open the folder Snail2021 on the desktor and double click on Snail2021.exe
+- follow the instructions on screen:
+  - Download and install ResourceHacker (scroll down, click on _EXE install_): http://angusj.com/resourcehacker/
+  - Download the official updater version 02.01.2 (click the green download button): https://tiplanet.org/forum/archives_voir.php?id=1044960
+  - Follow the instructions in the updater, but don't connect the calculator when it asks you to.
+- at this point, return back to the first windown (The Snail2021.exe)
+- click enter until it asks you to connect the calculator.
+- You can close the updater window now.
+- When you click enter the last time in the Snail2021.exe window, the updater will open again.
+- Connect the calculator via USB.
+- On the calculator hold down the [EXP], [^] and Clear keys. With those keys depressed, momentarily press the RESET button on the back of the calculator. Keep the three front buttons pressed until the screen displays the `OS ERROR` message. Don't worry, there is no actual error, this is just the update mode.
+- On the computer, Click on OK in the updater. 
+- __DO NOT TOUCH__ the calculator until the update is finished.
+- When the updater is finished, unplug it and plug it in again
+- Select USB Storage and copy the file run.bin and all .hhk files (from the folder Snail2021) directly onto the calculator.
+- On the computer, click on eject (probably on the bottom right) and eject the calculator.
+
+To start a program, go to the Menu, go to the right, select System, click on the gear on the top left and click on `Imaginary Unit` (I will probably rename this to 'Start hollyhock' or 'Start program' soon.)
+
+Select the program and click OK.
+
+
 # hollyhock
 An SDK to write your own applications for the CASIO fx-CP400 graphics calculator.
 
