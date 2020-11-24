@@ -1,0 +1,3 @@
+[submodule "patcher/Snail202x"]
+	path = patcher/Snail202x
+	url = https://github.com/SnailMath/Snail202x
