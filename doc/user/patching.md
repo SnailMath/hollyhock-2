@@ -52,48 +52,39 @@ sudo make install-target-libgcc
 
 You’ll now have `sh4-elf-gcc` and `sh4-elf-g++` available for your usage.
 
-## 2. Build the patches
+## 2. Build the patches and the patcher
 Keep working on your Linux machine.
 
-`cd` into the `patches/` directory. Run `make`.
+`cd` into the `patcher/` directory. Run `make`.
+(This will run `make` in `patches/` and it will merge the file mod.txt with the program Snail2021 into a file called Snail2021mod.c)
 
-## 3. Harvest the firmware updater
-Download the latest firmware update ZIP file from the [CASIO website](http://edu.casio.com/products/cg/cp2/). Run the installer inside the ZIP, but don't move through any of the steps. Leave it open.
+## 3. Building Snail2021
+Snail2021 is the program, that will extract the firmware updater from the casio updater. To build this, go to your Windows machine.
 
-Now, open your user's `AppData` folder and search for `OSupdateDLL.dll`. One result should appear - open the folder it's contained in. It should contain the files `OSupdateDLL.dll`, `fxASPI.dll` and `LanguageResource.dll`.
+-Install the MinGW-Installer
+-Select `mingw32-base-bin` (from All Packages -> MinGW -> MinGW Base System) -> right click -> 'Mark for installation'
+-Select `mingw32-libz-dev` (from All Packages -> MinGW -> MinGW Libaries -> MinGW Standard Libaries) -> right click -> 'Mark for installation'
+-Click on  'Installation' -> 'Apply Changes'
 
-![Directory containing the OSupdateDLL.dll, fxASPI.dll and LanguageResource.dll files](patching_dlls.png)
+-Double click on `patcher/make.bat`. You should not see any errors. This will create the file Snail2021.exe in the folder Snail2021 on the desktop
 
-Copy all three of these files into a temporary directory somewhere on your system. You can close the installer now.
+(If your name is not IEUser, you have to change the path in make.bat)
 
-## 4. Extract, patch, pack and embed the firmware image
-Move to either your Windows or Linux machine (whichever you have Python installed on).
+## 4. Run Snail2021 and modify the firmware
+Go to the desktop into the folder Snail2021. 
 
-Inside the temporary directory containing the DLLs you harvested, run the following commands. Replace `<hollyhock_path>` with the path to where you cloned this repository.
+Doule click on Snai2021.exe
 
-```sh
-# extract the two firmware images (3069: bootloader, 3070: main OS)
-python <hollyhock_path>/tools/hollyhock.py extract OSupdateDLL.dll fw3069.bin fw3070.bin
-# patch the main OS firmware image
-python <hollyhock_path>/tools/hollyhock.py patch <hollyhock_path>/patches/ fw3070.bin patched_fw3070.bin
-# pack the patched firmware image ready to be embedded in the DLL
-python <hollyhock_path>/tools/hollyhock.py pack patched_fw3070.bin packed_fw3070.bin OSupdateDLL.dll
-```
+Follow the instructions on screen:
+- Download and install Resource Hacker http://angusj.com/resourcehacker/ (scroll down and click on exe install)
+- Download the calculator updater version 02.01.2 https://tiplanet.org/forum/archives_voir.php?id=1044960 (Click on the green download
+- Run the updater, click ok on every question, but __do not__ connect the calculator, go back to the Snail2021.exe window when you are asked to connect the calculator.
+- Click Enter in the Snail2021.exe until it asks you to connect the calculator. 
+- At this point, you can close the Official Updater again.
+- When you click enter in Snail2021.exe for the last time, the modified updater opens.
 
-Copy the `OSupdateDLL.dll` file to something new (maybe `patched_OSupdateDLL.dll`!) and open it in your resource editor. Replace the 3070 resource with your packed 3070 image.
-
-![The patched_OSupdateDLL.dll file opened in Resource Hacker, with the RCData folder expanded and the 3070 entry right clicked. The "Replace Resource" menu entry is highlighted.](patching_rc_replace1.png)
-
-![The "Replace a resource..." dialog open, with the packed_fw3070.bin file selected. No other options in the dialog have been changed.](patching_rc_replace2.png)
-
-## 5. Run the updater
-Don't connect your calculator to your PC yet.
-
-On your Windows machine and in the temporary directory you've been working in, open the command prompt and run the following command.
-
-```
-<hollyhock_path>\tools\run_update.bat patched_OSupdateDLL.dll
-```
+## 5. Update the firmware
+At this point the modified updater should be open. (it opens at the end of Snail2021.exe, but you can start it manually by clicking on the file `click_to_modify_the_calculator.bat`)
 
 When the updater opens, hold the `[EXP]`, `[^]` and `Clear` keys on your fx-CP400. With those keys depressed, momentarily press the `RESET` button on the back of the calculator (hint: use the stylus!). Keep the three front buttons depressed until the LCD displays the following:
 
