@@ -16,6 +16,7 @@ mod.part.txt: file_loader.bin Makefile
 	head -2 README.md| tail -1 >> mod.part.txt
 	echo "" >> mod.part.txt
 	xxd -ps file_loader.bin >> mod.part.txt
+	echo "" >> mod.part.txt
 
 file_loader.bin: file_loader.o
 	$(OBJCOPY) $(OBJCOPY_FLAGS) file_loader.o file_loader.bin
