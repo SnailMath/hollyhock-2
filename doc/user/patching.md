@@ -52,6 +52,9 @@ sudo make install-target-libgcc
 
 You’ll now have `sh4-elf-gcc` and `sh4-elf-g++` available for your usage.
 
+_I would recommend adding `export PATH="$PATH:$HOME/opt/cross/bin"` to the file .bashrc in the home directory to add the path automatically after every login._
+_I would recommend adding `export SDK_DIR="PATH-TO/hollyhock-2/sdk"` to the file .bashrc in the home directory to export the sdk dir automatically after every login._
+
 ## 2. Build the patches and the patcher
 Keep working on your Linux machine.
 
