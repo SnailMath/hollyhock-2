@@ -4,10 +4,11 @@
 #include <sdk/os/mem.hpp>
 #include <sdk/os/string.hpp>
 #include "apps.hpp"
+#include "execs.hpp"
 
 class Launcher : public GUIDialog {
 public:
-    int m_selectedApp;
+    int m_selectedProg;
 
     Launcher() : GUIDialog(
         GUIDialog::Height95, GUIDialog::AlignTop,
@@ -16,7 +17,7 @@ public:
     ), m_appNames(
         GetLeftX() + 10, GetTopY() + 10, GetRightX() - 10, GetBottomY() - 10,
         APP_NAMES_EVENT_ID
-    ), m_appInfo(
+    ), m_progInfo(
         GetLeftX() + 10, GetTopY() + 90, GetRightX() - 10, GetBottomY() - 10,
         // Since the app info string is immediately updated based on the
         // selected app, if no apps are found, this is the string that stays
@@ -30,10 +31,12 @@ public:
         GetRightX() - 10 - 100, GetTopY() + 45, GetRightX() - 10, GetTopY() + 45 + 35,
         "Close", CLOSE_EVENT_ID
     ) {
-        m_selectedApp = 0;
+        m_selectedProg = 0;
 
         Apps::LoadAppInfo();
+        Execs::LoadExecInfo();
 
+        //Add apps to dropdown
         for (int i = 0; i < Apps::g_numApps; ++i) {
             struct Apps::AppInfo *app = &Apps::g_apps[i];
 
@@ -53,15 +56,35 @@ public:
             ));
         }
 
+        //Add execs to dropdown
+        for (int i = 0; i < Execs::g_numExecs; ++i) {
+            struct Execs::ExecInfo *exec = &Execs::g_execs[i];
+
+            const char *name = exec->path;
+
+            // first char of the name will not be \0 if a name was included.
+            if (exec->name[0] != '\0') {  
+                name = exec->name;
+            }
+
+            m_appNames.AddMenuItem(*(
+                new GUIDropDownMenuItem(
+                    name, i + 1 + Apps::g_numApps, //Add execs after apps
+                    GUIDropDownMenuItem::FlagEnabled |
+                    GUIDropDownMenuItem::FlagTextAlignLeft
+                )
+            ));
+        }
+
         m_appNames.SetScrollBarVisibility(
             GUIDropDownMenu::ScrollBarVisibleWhenRequired
         );
         AddElement(m_appNames);
 
-        AddElement(m_appInfo);
+        AddElement(m_progInfo);
 
-        // Only show the Run button if there's apps to display
-        if (Apps::g_numApps > 0) {
+        // Only show the Run button if there's apps or execs to display
+        if (Apps::g_numApps+Execs::g_numExecs > 0) {
             AddElement(m_run);
         }
 
@@ -72,7 +95,7 @@ public:
 
     virtual int OnEvent(GUIDialog_Wrapped *dialog, GUIDialog_OnEvent_Data *event) {
         if (event->GetEventID() == APP_NAMES_EVENT_ID && (event->type & 0xF) == 0xD) {
-            m_selectedApp = event->data - 1;
+            m_selectedProg = event->data - 1;
 
             UpdateAppInfo();
 
@@ -84,61 +107,116 @@ public:
 
     void UpdateAppInfo() {
         // If an invalid index is selected, don't do anything
-        if (m_selectedApp >= Apps::g_numApps) return;
+        if (m_selectedProg >= (Apps::g_numApps + Execs::g_numExecs)) return;
+        // Check if an exec is selecter or an app is selected
+        if (m_selectedProg >= Apps::g_numApps){
 
-        struct Apps::AppInfo *app = &Apps::g_apps[m_selectedApp];
-        bool hasName = app->name[0] != '\0';
-        bool hasDescription = app->description[0] != '\0';
-        bool hasAuthor = app->author[0] != '\0';
-        bool hasVersion = app->version[0] != '\0';
+            //An exec is selected
+            struct Execs::ExecInfo *exec = &Execs::g_execs[m_selectedProg-Apps::g_numApps];
+            bool hasName = exec->name[0] != '\0';
+            bool hasDescription = exec->description[0] != '\0';
+            bool hasAuthor = exec->author[0] != '\0';
+            bool hasVersion = exec->version[0] != '\0';
 
-        memset(m_appInfoString, 0, sizeof(m_appInfoString));
+            memset(m_progInfoString, 0, sizeof(m_progInfoString));
 
-        if (hasName) {
-            strcat(m_appInfoString, app->name);
-        } else {
-            strcat(m_appInfoString, app->path);
-        }
-
-        if (hasAuthor || hasVersion) {
-            strcat(m_appInfoString, "\n(");
-
-            if (hasVersion) {
-                strcat(m_appInfoString, "version ");
-                strcat(m_appInfoString, app->version);
+            if (hasName) {
+                strcat(m_progInfoString, exec->name);
+            } else {
+                strcat(m_progInfoString, exec->path);
             }
 
-            if (hasAuthor) {
+            if (hasAuthor || hasVersion) {
+                strcat(m_progInfoString, "\n(");
+
                 if (hasVersion) {
-                    strcat(m_appInfoString, " by ");
-                } else {
-                    strcat(m_appInfoString, "by ");
+                    strcat(m_progInfoString, "version ");
+                    strcat(m_progInfoString, exec->version);
                 }
 
-                strcat(m_appInfoString, app->author);
+                if (hasAuthor) {
+                    if (hasVersion) {
+                        strcat(m_progInfoString, " by ");
+                    } else {
+                        strcat(m_progInfoString, "by ");
+                    }
+
+                    strcat(m_progInfoString, exec->author);
+                }
+
+                strcat(m_progInfoString, ")");
             }
 
-            strcat(m_appInfoString, ")");
-        }
+            if (hasName) {
+                strcat(m_progInfoString, "\n(from ");
+                strcat(m_progInfoString, exec->path);
+                strcat(m_progInfoString, ")");
+            }
 
-        if (hasName) {
-            strcat(m_appInfoString, "\n(from ");
-            strcat(m_appInfoString, app->path);
-            strcat(m_appInfoString, ")");
+            if (hasDescription) {
+                strcat(m_progInfoString, "\n\n");
+                strcat(m_progInfoString, exec->description);
+            }
         }
+        else 
+        {
 
-        if (hasDescription) {
-            strcat(m_appInfoString, "\n\n");
-            strcat(m_appInfoString, app->description);
-        }
+            //An app is selected
+            struct Apps::AppInfo *app = &Apps::g_apps[m_selectedProg];
+            bool hasName = app->name[0] != '\0';
+            bool hasDescription = app->description[0] != '\0';
+            bool hasAuthor = app->author[0] != '\0';
+            bool hasVersion = app->version[0] != '\0';
+
+            memset(m_progInfoString, 0, sizeof(m_progInfoString));
+
+            if (hasName) {
+                strcat(m_progInfoString, app->name);
+            } else {
+                strcat(m_progInfoString, app->path);
+            }
+
+            if (hasAuthor || hasVersion) {
+                strcat(m_progInfoString, "\n(");
+
+                if (hasVersion) {
+                    strcat(m_progInfoString, "version ");
+                    strcat(m_progInfoString, app->version);
+                }
+
+                if (hasAuthor) {
+                    if (hasVersion) {
+                        strcat(m_progInfoString, " by ");
+                    } else {
+                        strcat(m_progInfoString, "by ");
+                    }
+
+                    strcat(m_progInfoString, app->author);
+                }
+
+                strcat(m_progInfoString, ")");
+            }
+
+            if (hasName) {
+                strcat(m_progInfoString, "\n(from ");
+                strcat(m_progInfoString, app->path);
+                strcat(m_progInfoString, ")");
+            }
+
+            if (hasDescription) {
+                strcat(m_progInfoString, "\n\n");
+                strcat(m_progInfoString, app->description);
+            }
 
         // App Name (version 1.0.0 by Meme King)
         // \fls0\meme.hhk
 
         // Meme to your heart's content.
 
-        m_appInfo.SetText(m_appInfoString);
-        m_appInfo.Refresh();
+        }
+
+        m_progInfo.SetText(m_progInfoString);
+        m_progInfo.Refresh();
         Refresh();
     }
 
@@ -146,14 +224,14 @@ private:
     const uint16_t APP_NAMES_EVENT_ID = 1;
     GUIDropDownMenu m_appNames;
 
-    GUILongLabel m_appInfo;
+    GUILongLabel m_progInfo;
 
     // While GUILongLabel seems to copy the string into it's own memory when
     // calling SetText, when it refreshes sometimes it tries to read the old
     // memory. Not sure why, but that's why this is here - it'll never move
     // because GUIDialog has the copy/move ctor deleted. This should therefore
     // be a safe solution.
-    char m_appInfoString[500];
+    char m_progInfoString[500];
 
     const uint16_t RUN_EVENT_ID = GUIDialog::DialogResultOK;
     GUIButton m_run;
@@ -165,9 +243,18 @@ private:
 void main() {
     Launcher launcher;
     if (launcher.ShowDialog() == GUIDialog::DialogResultOK) {
-        Apps::EntryPoint ep = Apps::RunApp(launcher.m_selectedApp);
-        if (ep != nullptr) {
-            ep();
-        }
+        if (launcher.m_selectedProg >= Apps::g_numApps){
+	        //Exec selected
+			Execs::EntryPoint epE = Execs::RunExec(launcher.m_selectedProg-Apps::g_numApps);
+			if (epE != nullptr) {
+				epE();
+			}
+		}else{
+			//App selected
+			Apps::EntryPoint epA = Apps::RunApp(launcher.m_selectedProg);
+			if (epA != nullptr) {
+				epA();
+			}
+		}
     }
 }
