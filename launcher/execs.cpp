@@ -64,8 +64,8 @@ namespace Execs {
 			strcat(exec.fileName, hhk); //the filename of the first file
 
 			// build the path
-			strcat(exec.path, "hhk/");
-			strcat(exec.path, exec.fileName);
+			//strcat(exec.path, "hhk/");
+			//strcat(exec.path, exec.fileName);
 
 			strcat(exec.name, hhk);//"The Name!");
 			strcat(exec.description, "The Description");

@@ -2,8 +2,8 @@
 
 namespace Execs {
     struct ExecInfo {
-        char fileName[100];
-        char path[200];
+        char fileName[9];
+        //char path[200];
         char name[100];
         char description[100];
         char author[100];

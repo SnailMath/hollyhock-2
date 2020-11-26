@@ -60,7 +60,7 @@ public:
         for (int i = 0; i < Execs::g_numExecs; ++i) {
             struct Execs::ExecInfo *exec = &Execs::g_execs[i];
 
-            const char *name = exec->path;
+            const char *name = exec->fileName;
 
             // first char of the name will not be \0 if a name was included.
             if (exec->name[0] != '\0') {  
@@ -123,7 +123,8 @@ public:
             if (hasName) {
                 strcat(m_progInfoString, exec->name);
             } else {
-                strcat(m_progInfoString, exec->path);
+                strcat(m_progInfoString, "hhk/");
+                strcat(m_progInfoString, exec->fileName);
             }
 
             if (hasAuthor || hasVersion) {
@@ -148,8 +149,8 @@ public:
             }
 
             if (hasName) {
-                strcat(m_progInfoString, "\n(from ");
-                strcat(m_progInfoString, exec->path);
+                strcat(m_progInfoString, "\n(from hhk/");
+                strcat(m_progInfoString, exec->fileName);
                 strcat(m_progInfoString, ")");
             }
 
