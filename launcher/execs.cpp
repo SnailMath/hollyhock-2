@@ -148,6 +148,7 @@ namespace Execs {
         Debug_WaitKey();
         */
         char *var = (char*)((exec->fp[0]<<24)+(exec->fp[1]<<16)+(exec->fp[2]<<8)+(exec->fp[3]));
+        //Debug_Printf(0,0,false,0,var);
         //Convert from hex to bin
         char currentNibble = 0; //0 searching first nibble; 1 searching 2nd nibble; 2 read whole byte
         char currentByte = 0;
@@ -172,6 +173,7 @@ namespace Execs {
         	if(currentNibble==2){ //read whole byte
         		*buf = currentByte; buf++;
         		currentByte = 0;
+        		currentNibble = 0;
         	}
         	if(ch==0){
         	break;
@@ -182,11 +184,16 @@ namespace Execs {
 		//return (EntryPoint) ((exec->fp[0]<<24)+(exec->fp[1]<<16)+(exec->fp[2]<<8)+(exec->fp[3]));        
 		//return (EntryPoint) (test);
 		
-		/*
+		
         buf = (char*) 0x8CFF0000;
-        *buf = 0x00; buf++; *buf = 0x0B; buf++; //000B RTS
-        *buf = 0x00; buf++; *buf = 0x09; //0009 NOP
-        */
+		
+        //Debug_Printf(0,1,false,0,buf);
+        //LCD_Refresh();
+        //Debug_WaitKey();
+                
+        //*buf = 0x00; buf++; *buf = 0x0B; buf++; //000B RTS
+        //*buf = 0x00; buf++; *buf = 0x09; //0009 NOP
+        
 		return (EntryPoint) 0x8CFF0000;
     }
     
