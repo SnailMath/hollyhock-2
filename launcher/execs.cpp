@@ -153,29 +153,138 @@ namespace Execs {
         char currentNibble = 0; //0 searching first nibble; 1 searching 2nd nibble; 2 read whole byte
         char currentByte = 0;
         while(1==1){
-        	char ch = *var;
-        	if (ch=='\''){ //Comment
-        		while(*var!='\r' && *var!='\n' && *var!=0) var++;
-        		continue;
+        	//char ch = *var;
+            if (*var=='\''){ //Comment
+                while(*var!='\r' && *var!='\n' && *var!=0) var++;
+                continue;
+            }
+            if (*var=='"'){ //String
+                var++;
+                while(*var!='"' && *var!=0 ){
+                    *buf = *var; buf++;
+        	        var++;
+        	    }
         	}
-        	if (ch>='0' && ch<='9'){
-        		currentByte = (currentByte << 4) + (ch - '0');
+        	if (*var>='0' && *var<='9'){
+        		currentByte = (currentByte << 4) + (*var - '0');
         		currentNibble++;
         	}
-        	if (ch>='a' && ch<='f'){
-        		currentByte = (currentByte << 4) + (ch +(10 - 'a'));
+        	if (*var>='a' && *var<='f'){
+        		currentByte = (currentByte << 4) + (*var +(10 - 'a'));
         		currentNibble++;
         	}
-        	if (ch>='A' && ch<='F'){
-        		currentByte = (currentByte << 4) + (ch +(10 - 'A'));
+        	if (*var>='A' && *var<='F'){
+        		currentByte = (currentByte << 4) + (*var +(10 - 'A'));
         		currentNibble++;
         	}
-        	if(currentNibble==2){ //read whole byte
+        	if (*var=='#'){ //An address value. 
+        	    var++;
+            	if (*var=='C'){ //LCD_ClearScreen();
+            	    uint32_t addr = (uint32_t)LCD_ClearScreen;
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+            	}
+            	if (*var=='R'){ //LCD_Refresh();
+            	    uint32_t addr = (uint32_t)LCD_Refresh;
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+            	}
+            	if (*var=='V'){ //The actual address of the VRAM;
+            	    uint32_t addr = (uint32_t)LCD_GetVRAMAddress();
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+            	}
+            	if (*var=='X'){ //The actual width of the VRAM
+            	    int width, height;
+            	    LCD_GetSize(&width, &height);
+            	    *buf = (((uint16_t)width) & 0xff00) >>  8; buf++;
+            	    *buf = (((uint16_t)width) & 0x00ff)      ; buf++;
+            	}
+            	if (*var=='Y'){ //The actual height of the VRAM
+            	    int width, height;
+            	    LCD_GetSize(&width, &height);
+            	    *buf = (((uint16_t)height) & 0xff00) >>  8; buf++;
+            	    *buf = (((uint16_t)height) & 0x00ff)      ; buf++;
+            	}
+            	if (*var=='S'){ //Debug_SetCursorPosition(int x, int y);*
+            	    uint32_t addr = (uint32_t)Debug_SetCursorPosition;
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+            	}
+            	if (*var=='G'){ //Debug_GetCursorPosition(int *x, int *y);
+            	    uint32_t addr = (uint32_t)Debug_GetCursorPosition;
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+            	}
+            	if (*var=='W'){ //Debug_WaitKey();
+            	    uint32_t addr = (uint32_t)Debug_WaitKey;
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+            	}
+            	if (*var=='P'){ //Debug_Print...
+            	    var++;
+                	if (*var=='S'){ //Debug_PrintString(const char *string, bool invert);
+            	    uint32_t addr = (uint32_t)Debug_PrintString;
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+                	}
+                	if (*var=='F'){ //Debug_Printf(int x, int y, bool invert, int zero, const char *format, ...);
+            	    uint32_t addr = (uint32_t)Debug_Printf;
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+                	}
+                	if (*var=='N'){ //Debug_PrintNumberHex_Nibble(uint8_t value, int x, int y);
+            	    uint32_t addr = (uint32_t)Debug_PrintNumberHex_Nibble;
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+                	}
+                	if (*var=='B'){ //Debug_PrintNumberHex_Byte(uint8_t value, int x, int y);
+            	    uint32_t addr = (uint32_t)Debug_PrintNumberHex_Byte;
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+                	}
+                	if (*var=='W'){ //Debug_PrintNumberHex_Word(uint16_t value, int x, int y);
+            	    uint32_t addr = (uint32_t)Debug_PrintNumberHex_Word;
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+                	}
+                	if (*var=='L' || *var=='D'){ //Debug_PrintNumberHex_Dword(uint32_t value, int x, int y);
+            	    uint32_t addr = (uint32_t)Debug_PrintNumberHex_Dword;
+            	    *buf = (addr & 0xff000000) >> 24; buf++;
+            	    *buf = (addr & 0x00ff0000) >> 16; buf++;
+            	    *buf = (addr & 0x0000ff00) >>  8; buf++;
+            	    *buf = (addr & 0x000000ff)      ; buf++;
+                	}
+            	}
+            }
+           	if(currentNibble==2){ //read whole byte
         		*buf = currentByte; buf++;
         		currentByte = 0;
         		currentNibble = 0;
         	}
-        	if(ch==0){
+        	if(*var==0 || *var=='*'){
         	break;
         	}
         	var++;
