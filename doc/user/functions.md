@@ -23,6 +23,8 @@ Addr./Val.: Address in ROM (OS version 2.1.2) (or value if it is not a function)
 | #PB | void Debug_PrintNumberHex_Byte(uint8_t value, int x, int y); | 0x800944A0 | prints a hex byte |
 | #PW | void Debug_PrintNumberHex_Word(uint16_t value, int x, int y); | 0x800944C8 | prints a hex word |
 | #PL / #PD | void Debug_PrintNumberHex_Dword(uint32_t value, int x, int y); | 0x80094514 | prints a hex long/dword |
-| #PF | void Debug_Printf(int x, int y, bool invert, int zero, const char *format, ...); | 0x8002DBC8 | 
+| #PF | void Debug_Printf(int x, int y, bool invert, int zero, const char *format, ...); | 0x8002DBC8 | prints the format string |
+|  | void LCD_VRAMBackup();  | 0x8002D3FA | Backs up the VRAM |
+|  | void LCD_VRAMRestore(); | 0x8002D41A | Restores the VRAM |
 
-
+You can find all functions in the .hpp files in `/sdk/include/`.
