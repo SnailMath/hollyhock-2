@@ -64,7 +64,7 @@ First I start with the rough structure. The text after `//` is a comment, but ho
 ```
 This program does nothing and will return immediately. 
 
-Before we can run this, we need to translate this assembly code in hexadecimal machine code. You can either remember everything in the user manual or print out page 164 - 174.
+Before we can run this, we need to translate this assembly code in hexadecimal machine code. You can either remember everything in the user manual or [print out page 164 - 174](https://www.google.com/search?q=%22sh-4-32-bit-cpu-core-architecture-stmicroelectronics.pdf%22+site%3Ast.com).
 
 The values in the manual are binary, we just need to convert it to hexadecimal. According to the manual, `nop` is `0000000000001001`. This is `0009` in hex. 
 `rts` is `0000000000001011`, which is `000B`. So let's add that to our code.
