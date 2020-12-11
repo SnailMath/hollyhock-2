@@ -73,16 +73,277 @@ The values in the manual are binary, we just need to convert it to hexadecimal. 
 0009 'nop //do nothing
 
 000B 'rts //return subroutine
-0009 'nop /this is after a jump (the rts in this case), so we need to put a nop here.
+0009 'nop //this is after a jump (the rts in this case), so we need to put a nop here.
 ```
 Now we can do the very first test. Save it (using the floppy icon), turn the calculator off and on again (shift clear,  clear) and go to the menu, go to `System`, 
 click on the gear in the top left corner, click on `Hollyhock-2 Launcher` and select your program in the dropdown menu. Click on Run. Because your program returns
-immiately, you should see the message `The program has finished execution` immidiatly.
+immiately, you should see the message `The program has finished execution` immidiatly. (If it locks up, you typed something wrong. Hit reset on the back or take out and reinsert the batteries, fix the error and try again.)
 
-TO BE CONTINUED
+Now we add the backing up of important registers. If we want to use register r8-r14, we would need to back them up. Because we want to call subroutines, we need
+to back up the process register `pr`. This is a system register used by jsr to store the return address, that is retrieved by rts. Let's say, we also want to use r8 and r9, so I will back them up as well. All registers are restored at the end, make sure to restore them in the opposite order of backing them up.
+```
+2F86 'mov.l r8, @-r15 //Back up r8
+2F96 'mov.l r9, @-r15 //Back up r9
+4F22 'sts.l pr, @-r15 //Back up pr
+
+0009 'nop //Main code
+
+4F26 'lds.l @r15+, pr //Restore pr
+69F6 'mov.l @r15+, r9 //Restore r9
+68F6 'mov.l @r15+, r8 //Restore r8
+000B 'rts //return subroutine
+0009 'nop //delay slot
+```
+At this point I want to introduce you to the delay slot. The instruction __after__ a _delayed branch_ (see datasheet) gets executed __before__ the branch is taken.
+So to make things simpler, we could move the `mov.l @r15+, r8` after the `rts` into the delay slot, it will still get executed before the jump is taken.
+The example below will do exactly the same as the example above.
+```
+2F86 'mov.l r8, @-r15 //Back up r8
+2F96 'mov.l r9, @-r15 //Back up r9
+4F22 'sts.l pr, @-r15 //Back up pr
+
+0009 'nop //Main code
+
+4F26 'lds.l @r15+, pr //Restore pr
+69F6 'mov.l @r15+, r9 //Restore r9
+000B 'rts //return subroutine
+68F6 'mov.l @r15+, r8 //Restore r8 //delay slot (gets executed before the return)
+```
+Now it would be great, if we could do something else than just backing up and restoring registers. Print text for example.
+The simplest way is the function `Debug_PrintString(const char *string, bool invert)`. It is simpler than it looks. 
+
+We need to do three things:
+- Set the cursor using the function `Debug_SetCursorPosition(int x, int y)`
+- Print the text using the function `Debug_PrintString(const char *string, bool invert)`
+- Make the change on the screen visible using the function `LCD_Refresh()`
+We need to load the address of these functions in a register before we can call `jsr`. Because all addresses are 32 bit, we can't load this with the `mov #imm, rn` instruction, we have to use `mov.l` to load the value from a different position. Just look at the following code, it should make sense:
+```
+2F86 'mov.l r8, @-r15 //Back up r8
+2F96 'mov.l r9, @-r15 //Back up r9
+
+4F22 'sts.l pr, @-r15 //Back up pr
+0009 'nop 
+
+
+     ' //Main code
+D802 'mov.l setCursor, r8   ------------+
+D903 'mov.l printString, r9 ---------+  |
+                                     '  |
+                                     '  |
+4F26 'lds.l @r15+, pr //Restore pr   |  |
+69F6 'mov.l @r15+, r9 //Restore r9   |  |
+                                     '  |
+000B 'rts //return subroutine        |  |
+68F6 'mov.l @r15+, r8 //Restore r8   |  |
+                                     '  |
+'setCursor:                          |  |
+8002E430 '<--------------------------|--+
+'printString:                        |
+8002DA0C '<--------------------------+
+
+```
+The addresses after the code are behind the return instruction, so the CPU doesn't try to execute data. The `mov.l` instructions need the correct offset
+so the processor knows where the data is. I would suggest grouping everything in groups of 32 bits, so 2 instructions or 1 address. This makes it easyer to calculate the offset. Start counting the groupd after the mov.l instruction until you reach the data. Start with 0. So 00 is the group `lds.l ...`, 01 is `rts...`, 02 is `setCursor: 8002E430` and 03 is `printString: 8002DA0C`. Make sure to calculate this new every time you cange something.
+
+One thing: Where did I get the addresses from? Well, it just happens that I know these. But to make this simpler, you can replace them with `#S` and `#PS`. The launcher will replace this automatically while loading. [Here](functions.md) is a full list of all the functions you can replace with this short combinations.
+
+The next thing is to actually call the functions. But before we do that, we have to give arguments to them. Let's say, we want to print to position (0,1), so we
+have to put 0 in r4 and 1 in r5 before calling setCursor:
+```
+E400 'mov #0, r4 //x=0
+E500 'mov #1, r5 //y=1
+480B 'jsr @r8 //setCursor is in r8
+0009 'nop //(delay slot)
+
+```
+The arguments for the print are a little more complicated. We need a text to print. We can put that after the addresses between `"` so the Launcher copies it directly. Because strings need to be terminated with 0x00 we have to add `00` after the text. To load the address of the text, we have to use `mova text, r0` and `mov r0, r4` because we can only mova in r0, not in r4. We will give printString 0 as the argument in r5 using `mov #0, r5`, we could use #1 to invert the text color. 
+```
+     ' //back up everything
+2F86 'mov.l r8, @-r15 //Back up r8
+2F96 'mov.l r9, @-r15 //Back up r9
+
+4F22 'sts.l pr, @-r15 //Back up pr
+0009 'nop 
+
+
+     ' //Load subroutine addresses
+D806 'mov.l setCursor, r8   ------------+
+D907 'mov.l printString, r9 ---------+  |  //Make sure to recalculate these offsets!!!
+                                     '  |
+                                     '  |
+     ' //Set the Cursor to (0,1)     |  |
+E400 'mov #0, r4 //x=0               |  |
+E501 'mov #1, r5 //y=1               |  |
+                                     '  |
+480B 'jsr @r8 //setCursor is in r8   |  |
+0009 'nop //(delay slot)             |  |
+                                     '  |
+                                     '  |
+     ' //Print the text              |  |
+C706 'mova text, r0 -----------------------+
+6403 'mov r0, r4                     |  |  |
+   'The addr ofthe text is now in r4 |  |  |
+                                     '  |  |
+490B 'jsr @r9 //print is in r9       |  |  |
+E500 'mov #0, r5 //0 in r5 (this gets executed before the jsr, because it is in a delay slot)
+                                     '  |  |
+                                     '  |  |
+     ' //restore everything          |  |  |
+4F26 'lds.l @r15+, pr //Restore pr   |  |  |
+69F6 'mov.l @r15+, r9 //Restore r9   |  |  |
+                                     '  |  |
+000B 'rts //return subroutine        |  |  |
+68F6 'mov.l @r15+, r8 //Restore r8   |  |  |
+                                     '  |  |
+'setCursor:                          |  |  |
+#S '<--------------------------------|--+  | //You can use these symbols so you don't need to remember the long addresses.
+'printString:                        |     |
+#PS '<-------------------------------+     |
+'text:                                     |
+"Hello World" 00 '<------------------------+
+```
+This program runs and exits immidiately, but no text is on the screen. This is because the print subroutine changes only the content of the VRAM ant this has to
+be sent to the screen, before we can see it. This is what the function `LCD_Refresh()` does. We can use `#R` instead of the address `8003733E`.
+So we just need to call `LCD_Refresh()` after the `printStirng`.
+```
+     ' //back up everything
+2F86 'mov.l r8, @-r15 //Back up r8
+2F96 'mov.l r9, @-r15 //Back up r9
+
+4F22 'sts.l pr, @-r15 //Back up pr
+0009 'nop 
+
+
+     ' //Load subroutine addresses
+D808 'mov.l setCursor, r8   ------------+
+D909 'mov.l printString, r9 ---------+  |  //Make sure to recalculate these offsets!!!
+                                     '  |
+                                     '  |
+     ' //Set the Cursor to (0,1)     |  |
+E400 'mov #0, r4 //x=0               |  |
+E501 'mov #1, r5 //y=1               |  |
+                                     '  |
+480B 'jsr @r8 //setCursor is in r8   |  |
+0009 'nop //(delay slot)             |  |
+                                     '  |
+                                     '  |
+     ' //Print the text              |  |
+C708 'mova text, r0 -----------------------+
+6403 'mov r0, r4                     |  |  |
+   'The addr ofthe text is now in r4 |  |  |
+                                     '  |  |
+490B 'jsr @r9 //print is in r9       |  |  |
+E500 'mov #0, r5 //0 in r5 (this gets executed before the jsr, because it is in a delay slot)
+                                     '  |  |
+                                     '  |  |
+     ' //Refresh the LCD             |  |  |
+D205 'mov.l refresh, r2 ----------------------+
+420B 'jsr @r2                        |  |  |  |
+                                     '  |  |  |
+0009 'nop (delay slot)               |  |  |  |
+0009 'nop (make it an even number of instructions)
+                                     '  |  |  |
+                                     '  |  |  |
+     ' //restore everything          |  |  |  |
+4F26 'lds.l @r15+, pr //Restore pr   |  |  |  |
+69F6 'mov.l @r15+, r9 //Restore r9   |  |  |  |
+                                     '  |  |  |
+000B 'rts //return subroutine        |  |  |  |
+68F6 'mov.l @r15+, r8 //Restore r8   |  |  |  |
+                                     '  |  |  |
+'setCursor:                          |  |  |  |
+#S '<--------------------------------|--+  |  | //You can use these symbols so you don't need to remember the long addresses.
+'printString:                        |     |  |
+#PS '<-------------------------------+     |  |
+'refresh:                                  |  |
+#R '<--------------------------------------|--+
+'text:                                     |
+"Hello World" 00 '<------------------------+
+```
+Mayby you are wondering why I stored setCursor and printString in r8 and r9, which we had to back up first. Well, r8-r15 are preserved during function calls,
+so we can call the subroutine multiple times without needing to use mov.l multiple times. As an example, I will add a second text at position 2,15 with inverted colors. I will also add the hollyhock description at the beginning:
+```
+'Hello World
+'This is a simple Hello World program
+'SnailMath
+'1.0.0
+
+     ' //back up everything
+2F86 'mov.l r8, @-r15 //Back up r8
+2F96 'mov.l r9, @-r15 //Back up r9
+
+4F22 'sts.l pr, @-r15 //Back up pr
+0009 'nop 
+
+
+     ' //Load subroutine addresses
+D80C 'mov.l setCursor, r8
+D90D 'mov.l printString, r9 //Make sure to recalculate these offsets when you change something!!!
+
+
+     ' //Set the Cursor to (0,1)
+E400 'mov #0, r4 //x=0
+E501 'mov #1, r5 //y=1
+
+480B 'jsr @r8 //setCursor is in r8
+0009 'nop //(delay slot)
+
+
+     ' //Print the text
+C70C 'mova text, r0
+6403 'mov r0, r4 //The addr ofthe text is now in r4
+
+490B 'jsr @r9 //print is in r9
+E500 'mov #0, r5 //0 in r5 (this gets executed before the jsr, because it is in a delay slot)
+
+
+     ' //Set the Cursor to (2,15)
+E402 'mov  #2, r4 //x=2
+E50F 'mov #15, r5 //y=15=0x0F
+
+480B 'jsr @r8 //setCursor is in r8
+0009 'nop //(delay slot)
+
+
+     ' //Print the other text
+C70B 'mova text2, r0
+6403 'mov r0, r4 //The addr ofthe text is now in r4
+
+490B 'jsr @r9 //print is in r9
+E501 'mov #1, r5 //1 in r5 (invert color) (this gets executed before the jsr, because it is in a delay slot)
 
 
 
-Because I didn't wrote an assembler, you have to do that yourself.
+     ' //Refresh the LCD
+D205 'mov.l refresh, r2
+420B 'jsr @r2
 
-Values in hexadecimal (0x8CFF0000)
+0009 'nop (delay slot)
+0009 'nop (make it an even number of instructions)
+
+
+     ' //restore everything
+4F26 'lds.l @r15+, pr //Restore pr
+69F6 'mov.l @r15+, r9 //Restore r9
+
+000B 'rts //return subroutine
+68F6 'mov.l @r15+, r8 //Restore r8
+
+'setCursor:
+  #S
+'printString:
+  #PS
+'refresh:
+  #R
+'text:
+  "Hell"
+  "o Wo"
+  "rld"00
+'text2: 
+  "Snai"
+  "lMat"
+  "h!"0000
+```
+When you start this Program in the Hollyhock-2 Launcher, it is copied to RAM at address 0x8CFF0000 and it gets executed as a subroutine.
+
+Just type it into your calculator and try it out yourself. Can you add a call to #W to wait until the clear key is pressed?
