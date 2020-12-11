@@ -55,3 +55,5 @@ I (@The6P4C) have burned out *hard* on this project, and won't be maintaining it
 1. [Patching your firmware](doc/user/patching.md)
 2. [Using add-on software](doc/user/using.md)
 3. [Developing applications](doc/user/developing.md)
+4. [Writing programs without a PC](doc/user/exec.md)
+
