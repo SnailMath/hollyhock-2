@@ -52,8 +52,9 @@ I (@The6P4C) have burned out *hard* on this project, and won't be maintaining it
 ~~Please contact @ps100000 regarding this project.~~ If you have any questions, you can visit our discord https://discord.com/invite/fWxZXvy or comment on YouTube.
 
 ## User Guides
-1. [Patching your firmware](doc/user/patching.md)
+1. [Install hollyhock-2](#installation-simple)
 2. [Using add-on software](doc/user/using.md)
 3. [Developing applications](doc/user/developing.md)
 4. [Writing programs without a PC](doc/user/exec.md)
+5. [Patching your firmware (from source)](doc/user/patching.md) (complicated, you do not need this, just scroll up to section [Install](#installation-simple)
 
