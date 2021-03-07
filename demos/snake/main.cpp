@@ -5,7 +5,7 @@
 
 APP_NAME("Snake")
 APP_DESCRIPTION("A simple implementation of the game Snake.")
-APP_AUTHOR("The6P4C")
+APP_AUTHOR("The6P4C, modified by SnailMath")
 APP_VERSION("1.0.0")
 
 #define COLOR_BACKGROUND RGB_TO_RGB565(0, 0, 0)
@@ -198,19 +198,23 @@ void main() {
 	bool running = true;
 	while (running) {
 		draw();
-
-		if (!moveSnake()) {
-			lost = true;
-			running = false;
-		}
-
-		if (!checkSnake()) {
-			lost = true;
-			running = false;
-		}
-
+		
 		GetInput(&event, 0xFFFFFFFF, 0x10);
+
+		Debug_PrintNumberHex_Dword(event.type, 12, 0);
 		switch (event.type) {
+			case EVENT_TIMER: //Defined in sdk/os/input.hpp scince 03/07/2021
+
+				if (!moveSnake()) {
+					lost = true;
+					running = false;
+				}
+
+				if (!checkSnake()) {
+					lost = true;
+					running = false;
+				}
+
 			case EVENT_KEY:
 				switch (event.data.key.keyCode) {
 				case KEYCODE_UP:

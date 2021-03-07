@@ -16,6 +16,7 @@ const uint16_t EVENT_ACTBAR_ROTATE = 0x1005;
 const uint16_t EVENT_ACTBAR_ESC = 0x3009;
 const uint16_t EVENT_ACTBAR_SETTINGS = 0x300A;
 const uint16_t EVENT_TOUCH = 0x4000;
+const uint16_t EVENT_TIMER = 0x0005;
 
 const uint32_t KEY_PRESSED = 1;
 const uint32_t KEY_HELD = 0x100;
