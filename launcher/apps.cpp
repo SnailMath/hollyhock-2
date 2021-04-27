@@ -4,6 +4,11 @@
 #include "apps.hpp"
 #include "elf.h"
 
+const char *HHK_FOLDER[] = {
+	"\\fls0\\",
+	"\\drv0\\"
+};
+
 class File {
 public:
 	File() : m_opened(false), m_fd(-1) {
@@ -121,7 +126,7 @@ namespace Apps {
         return elf;
     }
 
-	void LoadApp(wchar_t *fileName) {
+	void LoadApp(const char *folder, wchar_t *fileName) {
 		struct AppInfo app;
 		memset(&app, 0, sizeof(app));
 
@@ -136,7 +141,8 @@ namespace Apps {
 		}
 
 		// build the path
-		strcat(app.path, "\\fls0\\");
+		//strcat(app.path, "\\fls0\\");
+		strcat(app.path, folder);
 		strcat(app.path, app.fileName);
 
 		File f;
@@ -186,23 +192,36 @@ namespace Apps {
 		g_apps[g_numApps++] = app;
 	}
 
-    void LoadAppInfo() {
+	void LoadAppInfo() {
 		g_numApps = 0;
 
-        Find find;
+		Find find;
 
-        wchar_t fileName[100];
-        struct findInfo findInfoBuf;
+		wchar_t fileName[100];
+		struct findInfo findInfoBuf;
 
-        int ret = find.findFirst(L"\\fls0\\*.hhk", fileName, &findInfoBuf);
-        while (ret >= 0) {
-            if (findInfoBuf.type == findInfoBuf.EntryTypeFile) {
-				LoadApp(fileName);
+		for (unsigned int dirNr=0; dirNr<sizeof(HHK_FOLDER)/sizeof(HHK_FOLDER[0]);dirNr++){
+			wchar_t findDir[100];
+			int i=0;
+			while (HHK_FOLDER[dirNr][i]!=0){
+				findDir[i] = (wchar_t)HHK_FOLDER[dirNr][i]; 
+				i++;
 			}
-
-            ret = find.findNext(fileName, &findInfoBuf);
-        }
-    }
+			findDir[i++]='*';
+			findDir[i++]='.';
+			findDir[i++]='h';
+			findDir[i++]='h';
+			findDir[i++]='k';
+			findDir[i++]=0;
+			int ret = find.findFirst(findDir, fileName, &findInfoBuf);
+			while (ret >= 0) {
+				if (findInfoBuf.type == findInfoBuf.EntryTypeFile) {
+					LoadApp(HHK_FOLDER[dirNr],fileName);
+				}
+				ret = find.findNext(fileName, &findInfoBuf);
+			}
+		}
+	}
 
     EntryPoint RunApp(int i) {
         struct AppInfo *app = &g_apps[i];
