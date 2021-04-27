@@ -3,11 +3,9 @@
 #include <sdk/os/string.hpp>
 #include "apps.hpp"
 #include "elf.h"
+#include <sdk/os/serial.hpp>
 
-const char *HHK_FOLDER[] = {
-	"\\fls0\\",
-	"\\drv0\\"
-};
+#define hex2asc(x) ((x)>9?((x)+'A'-10):((x)+'0'))
 
 class File {
 public:
@@ -64,6 +62,12 @@ private:
 };
 
 namespace Apps {
+	const char *HHK_FOLDER[] = {
+		"\\fls0\\",
+		"\\drv0\\"
+	};
+	const char FILE_MASK[] = "*.hhk";
+
     struct AppInfo g_apps[MAX_APPS];
     int g_numApps;
 
@@ -195,24 +199,24 @@ namespace Apps {
 	void LoadAppInfo() {
 		g_numApps = 0;
 
-		Find find;
-
-		wchar_t fileName[100];
-		struct findInfo findInfoBuf;
-
 		for (unsigned int dirNr=0; dirNr<sizeof(HHK_FOLDER)/sizeof(HHK_FOLDER[0]);dirNr++){
+			Find find;
+
+			wchar_t fileName[100];
+			struct findInfo findInfoBuf;
+
 			wchar_t findDir[100];
 			int i=0;
 			while (HHK_FOLDER[dirNr][i]!=0){
 				findDir[i] = (wchar_t)HHK_FOLDER[dirNr][i]; 
 				i++;
 			}
-			findDir[i++]='*';
-			findDir[i++]='.';
-			findDir[i++]='h';
-			findDir[i++]='h';
-			findDir[i++]='k';
-			findDir[i++]=0;
+			int j=0;
+			while (FILE_MASK[j]!=0){
+				findDir[i] = (wchar_t)FILE_MASK[j];
+				i++; j++;
+			}
+			findDir[i] = 0;
 			int ret = find.findFirst(findDir, fileName, &findInfoBuf);
 			while (ret >= 0) {
 				if (findInfoBuf.type == findInfoBuf.EntryTypeFile) {
