@@ -4,6 +4,7 @@
 #include <sdk/os/mem.hpp>
 #include <sdk/os/string.hpp>
 #include "apps.hpp"
+#include "bins.hpp"
 #include "execs.hpp"
 
 class Launcher : public GUIDialog {
@@ -34,6 +35,7 @@ public:
         m_selectedProg = 0;
 
         Apps::LoadAppInfo();
+        Bins::LoadAppInfo();
         Execs::LoadExecInfo();
 
         //Add apps to dropdown
@@ -56,6 +58,26 @@ public:
             ));
         }
 
+        //Add bins to dropdown
+        for (int i = 0; i < Bins::g_numApps; ++i) {
+            struct Bins::AppInfo *app = &Bins::g_apps[i];
+
+            const char *name = app->path;
+
+            // first char of the name will not be \0 if a name was included.
+            if (app->name[0] != '\0') {  
+                name = app->name;
+            }
+
+            m_appNames.AddMenuItem(*(
+                new GUIDropDownMenuItem(
+                    name, i + 1 + Apps::g_numApps, //Add bins after apps
+                    GUIDropDownMenuItem::FlagEnabled |
+                    GUIDropDownMenuItem::FlagTextAlignLeft
+                )
+            ));
+        }
+
         //Add execs to dropdown
         for (int i = 0; i < Execs::g_numExecs; ++i) {
             struct Execs::ExecInfo *exec = &Execs::g_execs[i];
@@ -69,7 +91,7 @@ public:
 
             m_appNames.AddMenuItem(*(
                 new GUIDropDownMenuItem(
-                    name, i + 1 + Apps::g_numApps, //Add execs after apps
+                    name, i + 1 + Apps::g_numApps + Bins::g_numApps, //Add execs after apps and bins
                     GUIDropDownMenuItem::FlagEnabled |
                     GUIDropDownMenuItem::FlagTextAlignLeft
                 )
@@ -84,7 +106,7 @@ public:
         AddElement(m_progInfo);
 
         // Only show the Run button if there's apps or execs to display
-        if (Apps::g_numApps+Execs::g_numExecs > 0) {
+        if (Apps::g_numApps+Bins::g_numApps+Execs::g_numExecs > 0) {
             AddElement(m_run);
         }
 
@@ -107,12 +129,12 @@ public:
 
     void UpdateAppInfo() {
         // If an invalid index is selected, don't do anything
-        if (m_selectedProg >= (Apps::g_numApps + Execs::g_numExecs)) return;
+        if (m_selectedProg >= (Apps::g_numApps + Bins::g_numApps + Execs::g_numExecs)) return;
         // Check if an exec is selecter or an app is selected
-        if (m_selectedProg >= Apps::g_numApps){
+        if (m_selectedProg >= (Apps::g_numApps + Bins::g_numApps)){
 
             //An exec is selected
-            struct Execs::ExecInfo *exec = &Execs::g_execs[m_selectedProg-Apps::g_numApps];
+            struct Execs::ExecInfo *exec = &Execs::g_execs[m_selectedProg-Apps::g_numApps-Bins::g_numApps];
             bool hasName = exec->name[0] != '\0';
             bool hasDescription = exec->description[0] != '\0';
             bool hasAuthor = exec->author[0] != '\0';
@@ -159,7 +181,57 @@ public:
                 strcat(m_progInfoString, exec->description);
             }
         }
-        else 
+        else
+        if (m_selectedProg >= (Apps::g_numApps)){
+
+            //A bin is selected
+            struct Bins::AppInfo *app = &Bins::g_apps[m_selectedProg-Apps::g_numApps];
+            bool hasName = app->name[0] != '\0';
+            bool hasDescription = app->description[0] != '\0';
+            bool hasAuthor = app->author[0] != '\0';
+            bool hasVersion = app->version[0] != '\0';
+
+            memset(m_progInfoString, 0, sizeof(m_progInfoString));
+
+            if (hasName) {
+                strcat(m_progInfoString, app->name);
+            } else {
+                strcat(m_progInfoString, app->path);
+            }
+
+            if (hasAuthor || hasVersion) {
+                strcat(m_progInfoString, "\n(");
+
+                if (hasVersion) {
+                    strcat(m_progInfoString, "version ");
+                    strcat(m_progInfoString, app->version);
+                }
+
+                if (hasAuthor) {
+                    if (hasVersion) {
+                        strcat(m_progInfoString, " by ");
+                    } else {
+                        strcat(m_progInfoString, "by ");
+                    }
+
+                    strcat(m_progInfoString, app->author);
+                }
+
+                strcat(m_progInfoString, ")");
+            }
+
+            if (hasName) {
+                strcat(m_progInfoString, "\n(from ");
+                strcat(m_progInfoString, app->path);
+                strcat(m_progInfoString, ")");
+            }
+
+            if (hasDescription) {
+                strcat(m_progInfoString, "\n\n");
+                strcat(m_progInfoString, app->description);
+            }
+		}
+		else
         {
 
             //An app is selected
@@ -244,13 +316,22 @@ private:
 void main() {
     Launcher launcher;
     if (launcher.ShowDialog() == GUIDialog::DialogResultOK) {
-        if (launcher.m_selectedProg >= Apps::g_numApps){
+        if (launcher.m_selectedProg >= Apps::g_numApps+Bins::g_numApps){
 	        //Exec selected
-			Execs::EntryPoint epE = Execs::RunExec(launcher.m_selectedProg-Apps::g_numApps);
+			Execs::EntryPoint epE = Execs::RunExec(launcher.m_selectedProg-Apps::g_numApps-Bins::g_numApps);
 			if (epE != nullptr) {
 				epE();
 			}
-		}else{
+		}
+		else if (launcher.m_selectedProg >= Apps::g_numApps){
+	        //Bin selected
+			Bins::EntryPoint epA = Bins::RunApp(launcher.m_selectedProg-Apps::g_numApps);
+			if (epA != nullptr) {
+				epA();
+			}
+		}
+
+		else{
 			//App selected
 			Apps::EntryPoint epA = Apps::RunApp(launcher.m_selectedProg);
 			if (epA != nullptr) {
