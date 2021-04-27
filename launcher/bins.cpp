@@ -2,8 +2,8 @@
 #include <sdk/os/mem.hpp>
 #include <sdk/os/string.hpp>
 #include "bins.hpp"
-#include "elf.h"
-#include <sdk/os/serial.hpp>
+//#include "elf.h"
+//#include <sdk/os/serial.hpp>
 
 #define hex2asc(x) ((x)>9?((x)+'A'-10):((x)+'0'))
 
@@ -27,6 +27,10 @@ public:
 
 	int getAddr(int offset, const void **addr) {
 		return ::getAddr(m_fd, offset, addr);
+	}
+
+	int read(void *buf, int count) {
+		return ::read(m_fd, buf, count);
 	}
 
 private:
@@ -62,7 +66,7 @@ private:
 };
 
 namespace Bins {
-	const char *HHK_FOLDER[] = {
+	const char *BIN_FOLDER[] = {
 		"\\fls0\\",
 		"\\drv0\\"
 	};
@@ -70,65 +74,6 @@ namespace Bins {
 
     struct AppInfo g_apps[MAX_APPS];
     int g_numApps;
-
-    const Elf32_Ehdr *LoadELF(File f, const Elf32_Shdr **sectionHeaders) {
-        const Elf32_Ehdr *elf;
-        int ret = f.getAddr(0, (const void **) &elf);
-        if (ret < 0) {
-            return nullptr;
-        }
-
-        // Check magic number
-        if (!(
-            elf->e_ident[EI_MAG0] == ELFMAG0 &&
-            elf->e_ident[EI_MAG1] == ELFMAG1 &&
-            elf->e_ident[EI_MAG2] == ELFMAG2 &&
-            elf->e_ident[EI_MAG3] == ELFMAG3
-        )) {
-            return nullptr;
-        }
-
-        // Check file class
-        if (elf->e_ident[EI_CLASS] != ELFCLASS32) {
-            return nullptr;
-        }
-
-        // Check data encoding
-        if (elf->e_ident[EI_DATA] != ELFDATA2MSB) {
-            return nullptr;
-        }
-
-        // Check ELF version
-        if (elf->e_ident[EI_VERSION] != EV_CURRENT) {
-            return nullptr;
-        }
-
-        // Check ABI (ignore ABI version EI_ABIVERSION)
-        if (elf->e_ident[EI_OSABI] != ELFOSABI_SYSV) {
-            return nullptr;
-        }
-
-        // Check ELF is an executable file
-        if (elf->e_type != ET_EXEC) {
-            return nullptr;
-        }
-
-        // Check machine
-        if (elf->e_machine != EM_SH) {
-            return nullptr;
-        }
-
-        // Check version
-        if (elf->e_version != EV_CURRENT) {
-            return nullptr;
-        }
-
-        *sectionHeaders = reinterpret_cast<const Elf32_Shdr *>(
-            reinterpret_cast<const uint8_t *>(elf) + elf->e_shoff
-        );
-
-        return elf;
-    }
 
 	void LoadApp(const char *folder, wchar_t *fileName) {
 		struct AppInfo app;
@@ -154,52 +99,29 @@ namespace Bins {
 		if (ret < 0) {
 			return;
 		}
+		char *binInfo;
+		f.getAddr(0x0c, (const void**)&binInfo);
 
-		const Elf32_Shdr *sectionHeaders;
-		const Elf32_Ehdr *elf = LoadELF(f, &sectionHeaders);
-
-		if (elf == nullptr) {
-			return;
+		if(*binInfo>=32&&*binInfo<127){
+			for(int i=0;*binInfo!=0;i++)
+				app.name[i] = *(binInfo++);
+			while(*binInfo==0)binInfo++;
+			for(int i=0;*binInfo!=0;i++)
+				app.description[i] = *(binInfo++);
+			while(*binInfo==0)binInfo++;
+			for(int i=0;*binInfo!=0;i++)
+				app.author[i] = *(binInfo++);
+			while(*binInfo==0)binInfo++;
+			for(int i=0;*binInfo!=0;i++)
+				app.version[i] = *(binInfo++);
 		}
-
-		const Elf32_Shdr *sectionHeaderStringTable = &sectionHeaders[elf->e_shstrndx];
-		for (int i = 0; i < elf->e_shnum; ++i) {
-			const Elf32_Shdr *sectionHeader = &sectionHeaders[i];
-
-			// skip the first empty section header
-			if (sectionHeader->sh_type == SHT_NULL) {
-				continue;
-			}
-
-			const char *sectionName = reinterpret_cast<const char *>(
-				reinterpret_cast<const uint8_t *>(elf) +
-				sectionHeaderStringTable->sh_offset +
-				sectionHeader->sh_name
-			);
-
-			const char *sectionData = reinterpret_cast<const char *>(
-				reinterpret_cast<const uint8_t *>(elf) +
-				sectionHeader->sh_offset
-			);
-
-			if (strcmp(sectionName, ".hollyhock_name") == 0) {
-				strcat(app.name, sectionData);
-			} else if (strcmp(sectionName, ".hollyhock_description") == 0) {
-				strcat(app.description, sectionData);
-			} else if (strcmp(sectionName, ".hollyhock_author") == 0) {
-				strcat(app.author, sectionData);
-			} else if (strcmp(sectionName, ".hollyhock_version") == 0) {
-				strcat(app.version, sectionData);
-			}
-		}
-
 		g_apps[g_numApps++] = app;
 	}
 
 	void LoadAppInfo() {
 		g_numApps = 0;
 
-		for (unsigned int dirNr=0; dirNr<sizeof(HHK_FOLDER)/sizeof(HHK_FOLDER[0]);dirNr++){
+		for (unsigned int dirNr=0; dirNr<sizeof(BIN_FOLDER)/sizeof(BIN_FOLDER[0]);dirNr++){
 			Find find;
 
 			wchar_t fileName[100];
@@ -207,8 +129,8 @@ namespace Bins {
 
 			wchar_t findDir[100];
 			int i=0;
-			while (HHK_FOLDER[dirNr][i]!=0){
-				findDir[i] = (wchar_t)HHK_FOLDER[dirNr][i]; 
+			while (BIN_FOLDER[dirNr][i]!=0){
+				findDir[i] = (wchar_t)BIN_FOLDER[dirNr][i]; 
 				i++;
 			}
 			int j=0;
@@ -220,53 +142,27 @@ namespace Bins {
 			int ret = find.findFirst(findDir, fileName, &findInfoBuf);
 			while (ret >= 0) {
 				if (findInfoBuf.type == findInfoBuf.EntryTypeFile) {
-					LoadApp(HHK_FOLDER[dirNr],fileName);
+					const char* exclude = "run.bin";
+					char different = 0;
+					for(unsigned int i=0;i<sizeof(exclude);i++) different|=(exclude[i]^fileName[i]);
+					if(different){
+						LoadApp(BIN_FOLDER[dirNr],fileName);
+					}
 				}
 				ret = find.findNext(fileName, &findInfoBuf);
 			}
 		}
 	}
 
-    EntryPoint RunApp(int i) {
-        struct AppInfo *app = &g_apps[i];
+	EntryPoint RunApp(int i) {
+		struct AppInfo *app = &g_apps[i];
 
-        File f;
-        int ret = f.open(app->path, OPEN_READ);
-        if (ret < 0) {
-            return nullptr;
-        }
-
-        const Elf32_Shdr *sectionHeaders;
-        const Elf32_Ehdr *elf = LoadELF(f, &sectionHeaders);
-
-		if (elf == nullptr) {
-			return nullptr;
+		File f;
+		int ret = f.open(app->path, OPEN_READ);
+		if (ret < 0) {
+		    return nullptr;
 		}
-
-		for (int i = 0; i < elf->e_shnum; ++i) {
-			const Elf32_Shdr *sectionHeader = &sectionHeaders[i];
-
-			// skip the first empty section header
-			if (sectionHeader->sh_type == SHT_NULL) {
-				continue;
-			}
-
-			const void *sectionData = reinterpret_cast<const void *>(
-				reinterpret_cast<const uint8_t *>(elf) +
-				sectionHeader->sh_offset
-			);
-
-			if ((sectionHeader->sh_flags & SHF_ALLOC) == SHF_ALLOC) {
-				void *dest = reinterpret_cast<void *>(sectionHeader->sh_addr);
-
-				if (sectionHeader->sh_type == SHT_PROGBITS) {
-					memcpy(dest, sectionData, sectionHeader->sh_size);
-				} else if (sectionHeader->sh_type == SHT_NOBITS) {
-					memset(dest, 0, sectionHeader->sh_size);
-				}
-			}
-		}
-
-		return reinterpret_cast<EntryPoint>(elf->e_entry);
+		f.read((void*)0x8CFF0000,0x10000);
+		return (EntryPoint) 0x8CFF0000;
     }
 }
