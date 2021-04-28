@@ -100,7 +100,7 @@ namespace Bins {
 			return;
 		}
 		char *binInfo;
-		f.getAddr(0x0c, (const void**)&binInfo);
+		f.getAddr(0x10, (const void**)&binInfo);
 
 		if(*binInfo>=32&&*binInfo<127){
 			for(int i=0;*binInfo!=0;i++)
@@ -162,7 +162,14 @@ namespace Bins {
 		if (ret < 0) {
 		    return nullptr;
 		}
-		f.read((void*)0x8CFF0000,0x10000);
-		return (EntryPoint) 0x8CFF0000;
+		//get address where the program should be loaded
+		unsigned char* address;
+		f.getAddr(0x0c, (const void**)&address);
+		EntryPoint entrypoint = (EntryPoint)0x8cff0000;
+		if (address[0]==0x80)
+				entrypoint = (EntryPoint)((address[0]<<24) + (address[1]<<16) + (address[2]<<8) + (address[3]));
+
+		f.read((void*)entrypoint,0x20000);
+		return entrypoint;
     }
 }
