@@ -2,10 +2,20 @@
 #include <sdk/os/mem.hpp>
 #include <sdk/os/string.hpp>
 #include "bins.hpp"
-//#include "elf.h"
-//#include <sdk/os/serial.hpp>
+#include <sdk/os/serial.hpp>
 
 #define hex2asc(x) ((x)>9?((x)+'A'-10):((x)+'0'))
+
+#define Serial_print(s) Serial_Write((const unsigned char*)s,sizeof(s)-1)
+
+#define Serial_printhex(x)	Serial_WriteSingle( hex2asc( ((x)>>28)&0xf ) );\
+							Serial_WriteSingle( hex2asc( ((x)>>24)&0xf ) );\
+							Serial_WriteSingle( hex2asc( ((x)>>20)&0xf ) );\
+							Serial_WriteSingle( hex2asc( ((x)>>16)&0xf ) );\
+							Serial_WriteSingle( hex2asc( ((x)>>12)&0xf ) );\
+							Serial_WriteSingle( hex2asc( ((x)>> 8)&0xf ) );\
+							Serial_WriteSingle( hex2asc( ((x)>> 4)&0xf ) );\
+							Serial_WriteSingle( hex2asc( ((x)>> 0)&0xf ) );
 
 class File {
 public:
@@ -166,10 +176,23 @@ namespace Bins {
 		unsigned char* address;
 		f.getAddr(0x0c, (const void**)&address);
 		EntryPoint entrypoint = (EntryPoint)0x8cff0000;
-		if (address[0]==0x80)
+		if (address[0]==0x8c)
 				entrypoint = (EntryPoint)((address[0]<<24) + (address[1]<<16) + (address[2]<<8) + (address[3]));
 
-		f.read((void*)entrypoint,0x20000);
+		int length = f.read((void*)entrypoint,0x20000);
+		//unsigned char mode[] = {0,5,0,0,0,0};
+		//Serial_Open(mode);
+		//Serial_print("The length is: 0x");
+		//Serial_printhex(length);
+		//unsigned char c;
+		//while(c!='\n') {
+		//		Serial_ReadSingle(&c);
+		//		if(c=='.'){
+		//				Serial_Close(0);
+		//				return nullptr;
+		//		}
+		//}
+		//Serial_Close(0);
 		return entrypoint;
     }
 }
