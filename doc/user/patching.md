@@ -25,7 +25,7 @@ export TARGET=sh4-elf
 export PATH="$PREFIX/bin:$PATH"
 ```
 
-Now, download the most recent stable version of the Binutils source code from the [Binutils website](https://gnu.org/software/binutils/). Extract the compressed file containing the source code into a directory, and `cd` into the newly created directory. Then, run these commands inside that directory.
+Now, download the most recent stable version of the Binutils source code from the [Binutils website](https://gnu.org/software/binutils/). Extract the compressed file containing the source code into a directory, and `cd` into the newly created directory. Then, run these commands inside that directory. (SnailMath is using version 2.35)
 
 ```sh
 mkdir build
@@ -37,7 +37,7 @@ sudo make install
 
 You'll now have tools such as `sh4-elf-as` and `sh4-elf-objcopy` available.
 
-Now, download the most recent stable version of the GCC source code from the [GCC website](https://gnu.org/software/gcc/). Extract the compressed file containing the source code into a directory, and `cd` into the newly created directory. Then, run these commands inside that directory. Be warned - the `make` commands may take a long time, depending on your system, and the `contrib/download_prerequisites` script will download about 30 MB of archives.
+Now, download the most recent stable version of the GCC source code from the [GCC website](https://gnu.org/software/gcc/). Extract the compressed file containing the source code into a directory, and `cd` into the newly created directory. Then, run these commands inside that directory. Be warned - the `make` commands may take a long time, depending on your system, and the `contrib/download_prerequisites` script will download about 30 MB of archives. (SnailMath is using version 10.2.0)
 
 ```sh
 contrib/download_prerequisites
