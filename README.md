@@ -1,11 +1,14 @@
 This is a __fork__ of the original hollyhock launcher by The6P4C (https://github.com/Stellaris-code/hollyhock-fork/).
-My intention is to modify it a little. I want to change the following things:
-- Exam mode: The Launcher should be disabled in exam mode to prevent cheating. (My math teacher in school wants this function) 
-             I will check the color of the battery logo to test, if the exam mode is on or off.
-- EXEC003:   I want to add the ability to run programs located in program variables. This was the function of the old "LoaderIIb", which I wrote a few month back.
-             I don't want to miss the feel of typing in programs byte per byte by hand (only if you want to) and sending them over the serial cable.
-- Strings:   I want to change a few texts in the OS, the Imaginary Unit button used to load the program should be renamed. The version text (usually "classpad II")
-             Was changed to "hollyhock" by The6P4C, I will change it to "hollyhock2" (or something similar) only after i patched the exam mode thing.
+My intention was to modify it a little. I changed the following things:
+- BIN:       I added the ability to load prograrms from binary files instead of .hhk files, the extrypoint is the start of the file and the load location is somwhere in the file,
+             look at the linker.ld file in the app_template folder.
+- EXEC003:   I added the ability to run programs located in program variables. This was the function of the old "LoaderIIb", which is now obsolete.
+             I didn't want to miss the feel of typing in programs byte per byte by hand (only if you want to) and sending them over the serial cable.
+- Exam mode: The Launcher is disabled in exam mode to prevent cheating. (Even though I would recommend going back to the original firmware for exams.) 
+             The loader checks the color of the battery logo to test, if the exam mode is on or off.
+- Strings:   I changed a few texts in the OS, the Imaginary Unit button used to load the program was renamed to 'Hollyhock-Launcher'. The version text (usually "classpad II")
+             Was changed to "hollyhock" by The6P4C, I changed it to "hollyhock-2".
+- Backslash: I will change the backslash character from the symbol `¥` to the symbol `\`.
 
 # DISCLAIMER
 - I AM NOT RESPONSIBLE FOR ANY DAMAGE YOU MAY DO TO YOUR fx-CP400.  
@@ -19,7 +22,7 @@ My intention is to modify it a little. I want to change the following things:
 # Installation (simple)
 This is how you install hollyhock-2 onto your calculator:
 - download the newest prebuild release of hollyhock-2: https://github.com/SnailMath/hollyhock-2/releases
-- extract the folder Snail2021 from the release onto the desktop.
+- copy the folder Snail2021 from the .zip file in the release onto the desktop.
 - open the folder Snail2021 on the desktor and double click on Snail2021.exe
 - follow the instructions on screen:
   - Download and install ResourceHacker (scroll down, click on _EXE install_): http://angusj.com/resourcehacker/
@@ -28,13 +31,13 @@ This is how you install hollyhock-2 onto your calculator:
 - at this point, return back to the first windown (The Snail2021.exe)
 - click enter until it asks you to connect the calculator.
 - You can close the updater window now.
-- When you click enter the last time in the Snail2021.exe window, the updater will open again.
+- When you click enter the last time in the Snail2021.exe window, the updater will open again, but this time it is the modified version.
 - Connect the calculator via USB.
-- On the calculator hold down the [EXP], [^] and Clear keys. With those keys depressed, momentarily press the RESET button on the back of the calculator. Keep the three front buttons pressed until the screen displays the `OS ERROR` message. Don't worry, there is no actual error, this is just the update mode.
+- On the calculator hold down the `EXP`, `^` and `Clear` keys. With those keys pressed, momentarily press the RESET button on the back of the calculator. Keep the three front buttons pressed until the screen displays the `OS ERROR` message. Don't worry, there is no actual error, this is just the update mode.
 - On the computer, Click on OK in the updater. 
 - __DO NOT TOUCH__ the calculator until the update is finished.
 - When the updater is finished, unplug it and plug it in again
-- Select USB Storage and copy the file run.bin and all .hhk files (from the folder Snail2021) directly onto the calculator.
+- Select USB Storage and copy the file run.bin and all .hhk and .bin files (from the folder Snail2021) directly onto the calculator.
 - On the computer, click on eject (probably on the bottom right) and eject the calculator.
 
 To start a program, go to the Menu, go to the right, select System, click on the gear on the top left and click on `Imaginary Unit` (I will probably rename this to 'Start hollyhock' or 'Start program' soon.)
