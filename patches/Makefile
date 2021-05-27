@@ -1,5 +1,6 @@
 all:
 	cd mod_marker;  make; cd ..
+	#don't build the backslash files, because I made that mod.part.txt by hand...
 	cd menu_texts;  make; cd ..
 	cd file_loader; make; cd ..
 	#
@@ -11,6 +12,8 @@ all:
 	#to use the wrong version of the firmware.
 	cat file_loader/mod.part.txt >> mod.txt #this is first		80128018
 	echo "*\n" >> mod.txt
+	cat backslash/mod.part.txt  >> mod.txt #this is second	806321C8
+	echo "*\n" >> mod.txt
 	cat menu_texts/mod.part.txt  >> mod.txt #this is second	808B5CD8
 	echo "*\n" >> mod.txt
 	cat mod_marker/mod.part.txt  >> mod.txt #this is second		808FCC10
@@ -18,6 +21,7 @@ all:
 
 clean:
 	cd mod_marker;  make clean; cd ..
+	#don't remove the backslash files, because I made that mod.part.txt by hand...
 	cd menu_texts;  make clean; cd ..
 	cd file_loader; make clean; cd ..
 	rm mod.txt
