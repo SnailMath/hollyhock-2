@@ -1,14 +1,19 @@
 # Patching the fx-CP400 firmware
-This isn't a fun process at the moment, but it works. Hopefully, in the future, this process will be easier - but it isn't yet. If you run into any serious trouble, reach out to me on [Twitter](http://twitter.com/The6P4C) or [Reddit](http://reddit.com/u/The6P4C) and I *may* be able to help you out. 
+**You do not need to do this by hand if you just want to install programs on ypur calculator! Just use the program Snail2021.exe which is available in the releases.**
 
-You need both a Windows and Linux machine to complete this process (as there is no updater for Linux, and the extraction tool extracts the firmware from the Windows DLLs). I'd recommend a virtual machine (or Vagrant box for simplicity) rather than two physical machines.
+Simple instructions if you just want to install it: https://github.com/SnailMath/hollyhock-2#installation-simple 
 
-You'll also need a resource editor program - [Resource Hacker](http://www.angusj.com/resourcehacker/) has been tested to work (Visual Studio can also be used to replace the RCDATA resource - just be careful to give the replaced resource an ID of 3070!).
+If you don't want to youse the precompiled program and you want to compile it by hand, 
+you need both a Windows and Linux machine to complete this process (as there is no updater for Linux, and the extraction tool extracts the firmware from the Windows DLLs). I'd recommend a virtual machine (or Vagrant box for simplicity) rather than two physical machines.
+
+You'll also need a resource editor program - [Resource Hacker](http://www.angusj.com/resourcehacker/) has been tested to work ~~(Visual Studio can also be used to replace the RCDATA resource - just be careful to give the replaced resource an ID of 3070!).~~ (Snail2021 relies on 'Resource Hacker')
 
 ## 0. Clone this repository
 Clone this repository onto your machine. If you're using a virtual machine, this is really great place to use the shared folders feature your VM host probably provides.
 
 ## 1. Build an SH4 cross-compiler
+(This is also needed if you just want to develop programs for the Classpad II.)
+
 Hop onto your Linux machine.
 
 First, you'll have to define a few environment variables to ensure the process goes smoothly. Feel free to change `PREFIX` (the installation location), but don't change `TARGET`.
