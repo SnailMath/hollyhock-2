@@ -1,4 +1,6 @@
 # Developing for the fx-CP400
+## I (SnailMath) have made a video, where I explained this. Just click [here: youtube.com/playlist...](https://www.youtube.com/playlist?list=PLrNL2wv7MwKqpz-BhOiwH_1DbS690ZDs4)
+
 You'll need your SH4 cross compiler to develop applications for the fx-CP400. If you patched your firmware, you'll already have done this. If not, check the instructions in [this](patching.md) document to build and install one.
 
 ## 1. Build the SDK
