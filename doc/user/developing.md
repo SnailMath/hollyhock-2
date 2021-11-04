@@ -23,14 +23,14 @@ Similarly, open the `Makefile` and edit the first line (`APP_NAME:=app_template`
 Edit `main.cpp` to your hearts content, and add other `.cpp`, `.c`, and `.s` files as you please. The `Makefile` will automatically detect new source files at compile time.
 
 ## 3. Get ready to build
-You'll need to point the Makefile to the SDK using the `SDK_DIR` environment variable. For example, if you cloned this repository to `~/hollyhock/`, set `SDK_DIR` to `~/hollyhock/sdk/`. You can do this either by exporting the variable before running any `make` commands, or setting the variable in the same command as you run make. It's recommended you make this an absolute path and not a relative one - otherwise you may run into issues if you attempt to call `make` while not in the same directory as the one you defined `SDK_DIR` relative to.
+You'll need to point the Makefile to the SDK using the `SDK_DIR` environment variable. For example, if you cloned this repository to `~/hollyhock-2/`, set `SDK_DIR` to `~/hollyhock-2/sdk/`. You can do this either by exporting the variable before running any `make` commands, or setting the variable in the same command as you run make. It's recommended you make this an absolute path and not a relative one - otherwise you may run into issues if you attempt to call `make` while not in the same directory as the one you defined `SDK_DIR` relative to.
 
 ```sh
 # Either do this once, at the start of every session (recommended):
-export SDK_DIR=~/hollyhock/sdk/
+export SDK_DIR=~/hollyhock-2/sdk/
 
 # Or, run make like this:
-SDK_DIR=~/hollyhock/sdk/ make
+SDK_DIR=~/hollyhock-2/sdk/ make
 ```
 
 ## 4. Build your app!
