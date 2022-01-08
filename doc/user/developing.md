@@ -89,7 +89,7 @@ If you also want newlib to create the arithmetic subroutines, you will need to m
 
 ```make
 LD:=sh4-elf-gcc # Change the linker to gcc instead of ld
-LD_FLAGS:=-nostartfiles -Wno-undef -L$(SDK_DIR)/newlib/sh-elf/lib # Change your LD_FLAGS to this (remove -nostdlib and --no-undefined)
+LD_FLAGS:=-nostartfiles -m4-nofpu -Wno-undef -L$(SDK_DIR)/newlib/sh-elf/lib # Change your LD_FLAGS to this (remove -nostdlib and --no-undefined)
 
 # For the APP_BIN target rule, change the line
 $(LD) --oformat=binary -T linker.ld -o $@ $(LD_FLAGS) $(OBJECTS) $(SDK_DIR)/sdk.o
