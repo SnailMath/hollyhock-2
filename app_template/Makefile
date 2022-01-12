@@ -38,15 +38,15 @@ all: $(APP_ELF) $(APP_BIN) Makefile
 clean:
 	rm -f $(OBJECTS) $(APP_ELF) $(APP_BIN)
 
-$(APP_ELF): $(OBJECTS) $(SDK_DIR)/sdk.o linker.ld
-	$(LD) -T linker.ld -o $@ $(LD_FLAGS) $(OBJECTS) $(SDK_DIR)/sdk.o
+$(APP_ELF): $(OBJECTS) $(SDK_DIR)/sdk.o linker_hhk.ld
+	$(LD) -T linker_hhk.ld -o $@ $(LD_FLAGS) $(OBJECTS) $(SDK_DIR)/sdk.o
 	$(OBJCOPY) --set-section-flags .hollyhock_name=contents,strings,readonly $(APP_ELF) $(APP_ELF)
 	$(OBJCOPY) --set-section-flags .hollyhock_description=contents,strings,readonly $(APP_ELF) $(APP_ELF)
 	$(OBJCOPY) --set-section-flags .hollyhock_author=contents,strings,readonly $(APP_ELF) $(APP_ELF)
 	$(OBJCOPY) --set-section-flags .hollyhock_version=contents,strings,readonly $(APP_ELF) $(APP_ELF)
 
-$(APP_BIN): $(OBJECTS) $(SDK_DIR)/sdk.o linker.ld
-	$(LD) --oformat binary -T linker.ld -o $@ $(LD_FLAGS) $(OBJECTS) $(SDK_DIR)/sdk.o
+$(APP_BIN): $(OBJECTS) $(SDK_DIR)/sdk.o linker_bin.ld
+	$(LD) --oformat binary -T linker_bin.ld -o $@ $(LD_FLAGS) $(OBJECTS) $(SDK_DIR)/sdk.o
 
 # We're not actually building sdk.o, just telling the user they need to do it
 # themselves. Just using the target to trigger an error when the file is
