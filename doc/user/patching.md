@@ -48,12 +48,13 @@ Now, download the most recent stable version of the GCC source code from the [GC
 contrib/download_prerequisites
 mkdir build
 cd build
-../configure --target=$TARGET --prefix="$PREFIX" --disable-nls --enable-languages=c,c++ --without-headers
+../configure --target=$TARGET --prefix="$PREFIX" --disable-nls --enable-languages=c,c++ --without-headers --with-multilib-list=m4-nofpu
 make all-gcc
 make all-target-libgcc
 sudo make install-gcc
 sudo make install-target-libgcc
 ```
+(Note: The `--with-multilib-list=m4-nofpu` flag is needed because the cpu doesn't have an fpu)
 
 You’ll now have `sh4-elf-gcc` and `sh4-elf-g++` available for your usage.
 
