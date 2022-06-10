@@ -151,7 +151,7 @@ close_str:
 
 .align 2	
 file_path:
-	.string "\\fls0\\run.bin"
+	.string "\\fls0\\boot\\run.bin"
 
 
 .align 2
