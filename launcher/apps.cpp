@@ -64,7 +64,7 @@ private:
 namespace Apps {
 	const char *HHK_FOLDER[] = {
 		"\\fls0\\",
-		"\\drv0\\"
+		"\\fls0\\bin"
 	};
 	const char FILE_MASK[] = "*.hhk";
 
