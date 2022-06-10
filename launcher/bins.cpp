@@ -78,7 +78,7 @@ private:
 namespace Bins {
 	const char *BIN_FOLDER[] = {
 		"\\fls0\\",
-		"\\drv0\\"
+		"\\fls0\\bin\\"
 	};
 	const char FILE_MASK[] = "*.bin";
 
