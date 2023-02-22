@@ -1,3 +1,7 @@
+If you want to install gcc for sh4, look [here](https://github.com/TheRainbowPhoenix/sh4-devenv-gitpod/blob/master/Dockerfile)!
+
+---
+
 # Patching the fx-CP400 firmware
 **You do not need to do this by hand if you just want to install programs on ypur calculator! Just use the program Snail2021.exe which is available in the releases.**
 
