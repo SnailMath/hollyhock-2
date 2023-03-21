@@ -28,3 +28,4 @@ Addr./Val.: Address in ROM (OS version 2.1.2) (or value if it is not a function)
 |  | void LCD_VRAMRestore(); | 0x8002D41A | Restores the VRAM |
 
 You can find all functions in the .hpp files in `/sdk/include/`.
+Their adresses are in `/sdk/os/`
