@@ -1,14 +1,11 @@
-
-C:
-cd C:\MinGW\bin
-mkdir C:\Users\IEUser\Desktop\Snail2021\
-rem gcc -o F:\Snail202x\Snail2021.exe F:\Snail202x\Snail2021.c -I \MinGW\msys\1.0\include -L \MinGW\msys\1.0\lib -lz -static
-gcc -o C:\Users\IEUser\Desktop\Snail2021\Snail2021.exe F:\hollyhock-2\patcher\Snail2021mod.c -lz -static
-del C:\Users\IEUser\Desktop\Snail2021\mod.txt
-
+echo Before running this for the first time make sure to edit this file and make sure that the paths to the files in the gcc command are correct. If you have not done this yet please exit and fix the issue. If you have already done it you can continue.
 pause
 
-copy C:\Users\IEUser\Desktop\Snail2021\Snail2021.exe F:\hollyhock-2\patcher\Snail2021.exe
+cd C:\MinGW\bin
+mkdir C:\Users\IEUser\Desktop\Snail2021\
+gcc -o C:\Users\IEUser\Desktop\Snail2021\Snail2021.exe C:\hollyhock-2\patcher\Snail2021mod.c -lz -static
+rem del C:\Users\IEUser\Desktop\Snail2021\mod.txt
+
 
 pause
 
