@@ -37,10 +37,10 @@ This is how you install hollyhock-2 onto your calculator:
 - On the computer, Click on OK in the updater. 
 - __DO NOT TOUCH__ the calculator until the update is finished.
 - When the updater is finished, unplug it and plug it in again
-- Select USB Storage and copy the file run.bin and all .hhk and .bin files (from the folder Snail2021) directly onto the calculator.
+- Select USB Storage and copy the file run.bin and all .hhk and .bin files (from the folder Snail2021) directly onto the calculator (If you miss this step, the calculator will freeze when trying to launch hollyhock 2).
 - On the computer, click on eject (probably on the bottom right) and eject the calculator.
 
-To start a program, go to the Menu, go to the right, select System, click on the gear on the top left and click on `Imaginary Unit` (I will probably rename this to 'Start hollyhock' or 'Start program' soon.)
+To start a program, go to the Menu, go to the right, select System, click on the gear on the top left and click on `Hollyhock-2 Launcher`
 
 Select the program and click OK.
 
