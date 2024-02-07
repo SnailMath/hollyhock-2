@@ -1,3 +1,5 @@
+This __fork__ fixes bug in the make file
+
 This is a __fork__ of the original hollyhock launcher by The6P4C (https://github.com/Stellaris-code/hollyhock-fork/).
 My intention was to modify it a little. I changed the following things:
 - BIN:       I added the ability to load prograrms from binary files instead of .hhk files, the extrypoint is the start of the file and the load location is somwhere in the file,
