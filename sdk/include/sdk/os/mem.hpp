@@ -14,7 +14,7 @@
  * @param ptr The pointer to the allocated region of memory to free.
  */
 extern "C"
-void free(void *ptr);
+void Mem_Free(void *ptr);
 
 /**
  * Allocates @p size bytes of memory.
@@ -25,7 +25,7 @@ void free(void *ptr);
  * @return A pointer to the allocated memory region.
  */
 extern "C"
-void *malloc(uint32_t size);
+void *Mem_Malloc(uint32_t size);
 
 /**
  * Copies one region of memory to another. Equivalent to the C standard library
@@ -39,7 +39,7 @@ void *malloc(uint32_t size);
  * @return @p destination
  */
 extern "C"
-void *memcpy(void *destination, const void *source, int num);
+void *Mem_Memcpy(void *destination, const void *source, int num);
 
 /**
  * Sets a region of memory to a specific value. Equivalent to the C standard
@@ -54,4 +54,4 @@ void *memcpy(void *destination, const void *source, int num);
  * @return @p ptr
  */
 extern "C"
-void *memset(void *ptr, int value, int num);
+void *Mem_Memset(void *ptr, int value, int num);

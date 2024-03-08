@@ -15,18 +15,18 @@ public:
 
 	~File() {
 		if (m_opened) {
-			close(m_fd);
+			File_Close(m_fd);
 		}
 	}
 
 	int open(const char *path, int flags) {
-		m_fd = ::open(path, flags);
+		m_fd = ::File_Open(path, flags);
 		m_opened = true;
 		return m_fd;
 	}
 
 	int getAddr(int offset, const void **addr) {
-		return ::getAddr(m_fd, offset, addr);
+		return ::File_GetAddr(m_fd, offset, addr);
 	}
 
 private:
@@ -42,18 +42,18 @@ public:
 
 	~Find() {
 		if (m_opened) {
-			findClose(m_findHandle);
+			File_FindClose(m_findHandle);
 		}
 	}
 
-	int findFirst(const wchar_t *path, wchar_t *name, struct findInfo *findInfoBuf) {
-		int ret = ::findFirst(path, &m_findHandle, name, findInfoBuf);
+	int findFirst(const wchar_t *path, wchar_t *name, struct File_FindInfo *findInfoBuf) {
+		int ret = ::File_FindFirst(path, &m_findHandle, name, findInfoBuf);
 		m_opened = true;
 		return ret;
 	}
 
-	int findNext(wchar_t *name, struct findInfo *findInfoBuf) {
-		return ::findNext(m_findHandle, name, findInfoBuf);
+	int findNext(wchar_t *name, struct File_FindInfo *findInfoBuf) {
+		return ::File_FindNext(m_findHandle, name, findInfoBuf);
 	}
 
 private:
@@ -132,7 +132,7 @@ namespace Apps {
 
 	void LoadApp(const char *folder, wchar_t *fileName) {
 		struct AppInfo app;
-		memset(&app, 0, sizeof(app));
+		Mem_Memset(&app, 0, sizeof(app));
 
 		// copy the file name (converting to a non-wide string in the
 		// process)
@@ -145,12 +145,12 @@ namespace Apps {
 		}
 
 		// build the path
-		//strcat(app.path, "\\fls0\\");
-		strcat(app.path, folder);
-		strcat(app.path, app.fileName);
+		//String_Strcat(app.path, "\\fls0\\");
+		String_Strcat(app.path, folder);
+		String_Strcat(app.path, app.fileName);
 
 		File f;
-		int ret = f.open(app.path, OPEN_READ);
+		int ret = f.open(app.path, FILE_OPEN_READ);
 		if (ret < 0) {
 			return;
 		}
@@ -182,14 +182,14 @@ namespace Apps {
 				sectionHeader->sh_offset
 			);
 
-			if (strcmp(sectionName, ".hollyhock_name") == 0) {
-				strcat(app.name, sectionData);
-			} else if (strcmp(sectionName, ".hollyhock_description") == 0) {
-				strcat(app.description, sectionData);
-			} else if (strcmp(sectionName, ".hollyhock_author") == 0) {
-				strcat(app.author, sectionData);
-			} else if (strcmp(sectionName, ".hollyhock_version") == 0) {
-				strcat(app.version, sectionData);
+			if (String_Strcmp(sectionName, ".hollyhock_name") == 0) {
+				String_Strcat(app.name, sectionData);
+			} else if (String_Strcmp(sectionName, ".hollyhock_description") == 0) {
+				String_Strcat(app.description, sectionData);
+			} else if (String_Strcmp(sectionName, ".hollyhock_author") == 0) {
+				String_Strcat(app.author, sectionData);
+			} else if (String_Strcmp(sectionName, ".hollyhock_version") == 0) {
+				String_Strcat(app.version, sectionData);
 			}
 		}
 
@@ -203,7 +203,7 @@ namespace Apps {
 			Find find;
 
 			wchar_t fileName[100];
-			struct findInfo findInfoBuf;
+			struct File_FindInfo findInfoBuf;
 
 			wchar_t findDir[100];
 			int i=0;
@@ -231,7 +231,7 @@ namespace Apps {
         struct AppInfo *app = &g_apps[i];
 
         File f;
-        int ret = f.open(app->path, OPEN_READ);
+        int ret = f.open(app->path, FILE_OPEN_READ);
         if (ret < 0) {
             return nullptr;
         }
@@ -260,9 +260,9 @@ namespace Apps {
 				void *dest = reinterpret_cast<void *>(sectionHeader->sh_addr);
 
 				if (sectionHeader->sh_type == SHT_PROGBITS) {
-					memcpy(dest, sectionData, sectionHeader->sh_size);
+					Mem_Memcpy(dest, sectionData, sectionHeader->sh_size);
 				} else if (sectionHeader->sh_type == SHT_NOBITS) {
-					memset(dest, 0, sectionHeader->sh_size);
+					Mem_Memset(dest, 0, sectionHeader->sh_size);
 				}
 			}
 		}
