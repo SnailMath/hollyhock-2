@@ -8,10 +8,10 @@ AS:=sh4-elf-gcc
 AS_FLAGS:=
 
 CC:=sh4-elf-gcc
-CC_FLAGS:=-ffreestanding -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/include/
+CC_FLAGS:=-ffreestanding -flto -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/include/
 
 CXX:=sh4-elf-g++
-CXX_FLAGS:=-ffreestanding -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/include/
+CXX_FLAGS:=-ffreestanding -flto -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/include/
 
 LD:=sh4-elf-ld
 LD_FLAGS:=-nostdlib --no-undefined
