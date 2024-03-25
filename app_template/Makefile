@@ -15,7 +15,7 @@ CC_FLAGS:=-ffreestanding -flto -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/inc
 CXX:=sh4-elf-g++
 CXX_FLAGS:=-ffreestanding -flto -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/include/ -m4a-nofpu
 
-LD:=sh4-elf-ld
+LD:=sh4-elf-g++
 LD_FLAGS:=-nostdlib --no-undefined
 
 READELF:=sh4-elf-readelf
