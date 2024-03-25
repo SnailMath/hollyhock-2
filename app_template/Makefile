@@ -10,10 +10,10 @@ AS:=sh4-elf-gcc
 AS_FLAGS:=
 
 CC:=sh4-elf-gcc
-CC_FLAGS:=-ffreestanding -flto -fshort-wchar -Wall -Wextra -Os -I $(SDK_DIR)/include/
+CC_FLAGS:=-ffreestanding -flto -Wl,--gc-sections -fshort-wchar -Wall -Wextra -Os -I $(SDK_DIR)/include/
 
 CXX:=sh4-elf-g++
-CXX_FLAGS:=-ffreestanding -flto -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -Os -I $(SDK_DIR)/include/ -m4a-nofpu
+CXX_FLAGS:=-ffreestanding -flto -Wl,--gc-sections -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -Os -I $(SDK_DIR)/include/ -m4a-nofpu
 
 LD:=sh4-elf-g++
 LD_FLAGS:=-nostartfiles --specs=nosys.specs --no-undefined
