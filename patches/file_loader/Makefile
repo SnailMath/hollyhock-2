@@ -1,6 +1,6 @@
 ADDR:=80128018
 
-AS:=sh4-elf-as
+AS:=sh4-elf-gcc
 AS_FLAGS:=
 
 OBJCOPY:=sh4-elf-objcopy

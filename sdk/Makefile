@@ -1,6 +1,6 @@
 DOXYGEN=doxygen
 
-AS:=sh4-elf-as
+AS:=sh4-elf-gcc
 AS_FLAGS:=
 
 CC:=sh4-elf-g++
