@@ -88,7 +88,7 @@ Congratulations! You can now utilize standard C functions in your fx-CP400 proje
 If you also want newlib to create the arithmetic subroutines, you will need to modify a few more things in your Makefile.
 
 ```make
-LD:=sh4-elf-gcc # Change the linker to gcc instead of ld
+LD:=sh4-elf-g++ # Change the linker to gcc instead of ld
 LD_FLAGS:=-nostartfiles -m4-nofpu -Wno-undef -L$(SDK_DIR)/newlib/sh-elf/lib # Change your LD_FLAGS to this (remove -nostdlib and --no-undefined)
 
 # For the APP_BIN target rule, change the line
