@@ -10,7 +10,7 @@ CC_FLAGS:=-ffreestanding -flto -Wl,--gc-sections -fno-exceptions -fno-rtti -m4a-
 # -r flag so the sdk.o file can be linked with the user's application object
 # files: generates a relocatable object file
 LD:=sh4-elf-g++
-LD_FLAGS:=-nostartfiles --specs=nosys.specs -r
+LD_FLAGS:=-nolibc -r
 
 AS_SOURCES:=$(wildcard *.s) $(wildcard **/*.s) $(wildcard **/**/*.s)
 CC_SOURCES:=$(wildcard *.cpp) $(wildcard **/*.cpp) $(wildcard **/**/*.cpp)
