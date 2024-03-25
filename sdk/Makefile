@@ -4,7 +4,8 @@ AS:=sh4-elf-gcc
 AS_FLAGS:=
 
 CC:=sh4-elf-g++
-CC_FLAGS:=-ffreestanding -flto -fno-exceptions -fno-rtti -m4a-nofpu -Wall -Wextra -O2 -I include/
+
+CC_FLAGS:=-ffreestanding -flto -fno-exceptions -fno-rtti -m4a-nofpu -Wall -Wextra -Os -I include/
 
 # -r flag so the sdk.o file can be linked with the user's application object
 # files: generates a relocatable object file
