@@ -12,7 +12,7 @@ CXX:=sh4-elf-g++
 CXX_FLAGS:=-ffreestanding -flto -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -Os -I $(SDK_DIR)/include/
 
 LD:=sh4-elf-g++
-LD_FLAGS:=-nostdlib --no-undefined
+LD_FLAGS:=-nostartfiles --specs=nosys.specs --no-undefined
 
 READELF:=sh4-elf-readelf
 OBJCOPY:=sh4-elf-objcopy
