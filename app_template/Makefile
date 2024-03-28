@@ -6,20 +6,20 @@ ifndef SDK_DIR
 $(error You need to define the SDK_DIR environment variable, and point it to the sdk/ folder)
 endif
 
-AS:=sh4-elf-as
+AS:=sh4aeb-elf-gcc
 AS_FLAGS:=
 
-CC:=sh4-elf-gcc
-CC_FLAGS:=-ffreestanding -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/include/
+CC:=sh4aeb-elf-gcc
+CC_FLAGS:=-ffreestanding -flto -ffunction-sections -fdata-sections -fshort-wchar -Wall -Wextra -Os -I $(SDK_DIR)/include/
 
-CXX:=sh4-elf-g++
-CXX_FLAGS:=-ffreestanding -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/include/ -m4a-nofpu
+CXX:=sh4aeb-elf-g++
+CXX_FLAGS:=-ffreestanding -flto -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -Os -I $(SDK_DIR)/include/ -m4a-nofpu
 
-LD:=sh4-elf-ld
-LD_FLAGS:=-nostdlib --no-undefined
+LD:=sh4aeb-elf-g++
+LD_FLAGS:=-nostartfiles --specs=nosys.specs -Wno-undef -Wl,--gc-sections -L$(SDK_DIR)
 
-READELF:=sh4-elf-readelf
-OBJCOPY:=sh4-elf-objcopy
+READELF:=sh4aeb-elf-readelf
+OBJCOPY:=sh4aeb-elf-objcopy
 
 AS_SOURCES:=$(wildcard *.s)
 CC_SOURCES:=$(wildcard *.c)
@@ -38,24 +38,24 @@ all: $(APP_ELF) $(APP_BIN) Makefile
 clean:
 	rm -f $(OBJECTS) $(APP_ELF) $(APP_BIN)
 
-$(APP_ELF): $(OBJECTS) $(SDK_DIR)/sdk.o linker_hhk.ld
-	$(LD) -T linker_hhk.ld -o $@ $(LD_FLAGS) $(OBJECTS) $(SDK_DIR)/sdk.o
+$(APP_ELF): $(OBJECTS) $(SDK_DIR)/libsdk.a linker_hhk.ld
+	$(LD) -T linker_hhk.ld -o $@ $(LD_FLAGS) $(OBJECTS) -lsdk
 	$(OBJCOPY) --set-section-flags .hollyhock_name=contents,strings,readonly $(APP_ELF) $(APP_ELF)
 	$(OBJCOPY) --set-section-flags .hollyhock_description=contents,strings,readonly $(APP_ELF) $(APP_ELF)
 	$(OBJCOPY) --set-section-flags .hollyhock_author=contents,strings,readonly $(APP_ELF) $(APP_ELF)
 	$(OBJCOPY) --set-section-flags .hollyhock_version=contents,strings,readonly $(APP_ELF) $(APP_ELF)
 
-$(APP_BIN): $(OBJECTS) $(SDK_DIR)/sdk.o linker_bin.ld
-	$(LD) --oformat binary -T linker_bin.ld -o $@ $(LD_FLAGS) $(OBJECTS) $(SDK_DIR)/sdk.o
+$(APP_BIN): $(OBJECTS) $(SDK_DIR)/libsdk.a linker_bin.ld
+	$(LD) -T linker_bin.ld -o $@ $(LD_FLAGS) $(OBJECTS) -lsdk
 
-# We're not actually building sdk.o, just telling the user they need to do it
+# We're not actually building libsdk.a, just telling the user they need to do it
 # themselves. Just using the target to trigger an error when the file is
 # required but does not exist.
-$(SDK_DIR)/sdk.o:
+$(SDK_DIR)/libsdk.a:
 	$(error You need to build the SDK before using it. Run make in the SDK directory, and check the README.md in the SDK directory for more information)
 
 %.o: %.s
-	$(AS) $< -o $@ $(AS_FLAGS)
+	$(AS) -c $< -o $@ $(AS_FLAGS)
 
 %.o: %.c
 	$(CC) -c $< -o $@ $(CC_FLAGS)
