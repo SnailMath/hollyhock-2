@@ -124,7 +124,7 @@ void main() {
 	for(int i = 0; i < 4; i++){		//get some keycodes to generate a seed for the random() function
 		bool r = true;
 		while(r){
-			memset(&event, 0, sizeof(event));
+			Mem_Memset(&event, 0, sizeof(event));
 			GetInput(&event, 0xFFFFFFFF, 0x10);
 			if(event.type == EVENT_KEY){
 				if(event.data.key.direction == KEY_PRESSED){
@@ -168,7 +168,7 @@ void main() {
 	print_score(0);
 	
 	while(running){
-		memset(&event, 0, sizeof(event));
+		Mem_Memset(&event, 0, sizeof(event));
 		GetInput(&event, 0x0, 0x12);
 		
 		if(event.type == EVENT_KEY){

@@ -140,45 +140,45 @@ public:
             bool hasAuthor = exec->author[0] != '\0';
             bool hasVersion = exec->version[0] != '\0';
 
-            memset(m_progInfoString, 0, sizeof(m_progInfoString));
+            Mem_Memset(m_progInfoString, 0, sizeof(m_progInfoString));
 
             if (hasName) {
-                strcat(m_progInfoString, exec->name);
+                String_Strcat(m_progInfoString, exec->name);
             } else {
-                strcat(m_progInfoString, "hhk/");
-                strcat(m_progInfoString, exec->fileName);
+                String_Strcat(m_progInfoString, "hhk/");
+                String_Strcat(m_progInfoString, exec->fileName);
             }
 
             if (hasAuthor || hasVersion) {
-                strcat(m_progInfoString, "\n(");
+                String_Strcat(m_progInfoString, "\n(");
 
                 if (hasVersion) {
-                    strcat(m_progInfoString, "version ");
-                    strcat(m_progInfoString, exec->version);
+                    String_Strcat(m_progInfoString, "version ");
+                    String_Strcat(m_progInfoString, exec->version);
                 }
 
                 if (hasAuthor) {
                     if (hasVersion) {
-                        strcat(m_progInfoString, " by ");
+                        String_Strcat(m_progInfoString, " by ");
                     } else {
-                        strcat(m_progInfoString, "by ");
+                        String_Strcat(m_progInfoString, "by ");
                     }
 
-                    strcat(m_progInfoString, exec->author);
+                    String_Strcat(m_progInfoString, exec->author);
                 }
 
-                strcat(m_progInfoString, ")");
+                String_Strcat(m_progInfoString, ")");
             }
 
             if (hasName) {
-                strcat(m_progInfoString, "\n(from hhk/");
-                strcat(m_progInfoString, exec->fileName);
-                strcat(m_progInfoString, ")");
+                String_Strcat(m_progInfoString, "\n(from hhk/");
+                String_Strcat(m_progInfoString, exec->fileName);
+                String_Strcat(m_progInfoString, ")");
             }
 
             if (hasDescription) {
-                strcat(m_progInfoString, "\n\n");
-                strcat(m_progInfoString, exec->description);
+                String_Strcat(m_progInfoString, "\n\n");
+                String_Strcat(m_progInfoString, exec->description);
             }
         }
         else
@@ -191,44 +191,44 @@ public:
             bool hasAuthor = app->author[0] != '\0';
             bool hasVersion = app->version[0] != '\0';
 
-            memset(m_progInfoString, 0, sizeof(m_progInfoString));
+            Mem_Memset(m_progInfoString, 0, sizeof(m_progInfoString));
 
             if (hasName) {
-                strcat(m_progInfoString, app->name);
+                String_Strcat(m_progInfoString, app->name);
             } else {
-                strcat(m_progInfoString, app->path);
+                String_Strcat(m_progInfoString, app->path);
             }
 
             if (hasAuthor || hasVersion) {
-                strcat(m_progInfoString, "\n(");
+                String_Strcat(m_progInfoString, "\n(");
 
                 if (hasVersion) {
-                    strcat(m_progInfoString, "version ");
-                    strcat(m_progInfoString, app->version);
+                    String_Strcat(m_progInfoString, "version ");
+                    String_Strcat(m_progInfoString, app->version);
                 }
 
                 if (hasAuthor) {
                     if (hasVersion) {
-                        strcat(m_progInfoString, " by ");
+                        String_Strcat(m_progInfoString, " by ");
                     } else {
-                        strcat(m_progInfoString, "by ");
+                        String_Strcat(m_progInfoString, "by ");
                     }
 
-                    strcat(m_progInfoString, app->author);
+                    String_Strcat(m_progInfoString, app->author);
                 }
 
-                strcat(m_progInfoString, ")");
+                String_Strcat(m_progInfoString, ")");
             }
 
             if (hasName) {
-                strcat(m_progInfoString, "\n(from ");
-                strcat(m_progInfoString, app->path);
-                strcat(m_progInfoString, ")");
+                String_Strcat(m_progInfoString, "\n(from ");
+                String_Strcat(m_progInfoString, app->path);
+                String_Strcat(m_progInfoString, ")");
             }
 
             if (hasDescription) {
-                strcat(m_progInfoString, "\n\n");
-                strcat(m_progInfoString, app->description);
+                String_Strcat(m_progInfoString, "\n\n");
+                String_Strcat(m_progInfoString, app->description);
             }
 		}
 		else
@@ -241,44 +241,44 @@ public:
             bool hasAuthor = app->author[0] != '\0';
             bool hasVersion = app->version[0] != '\0';
 
-            memset(m_progInfoString, 0, sizeof(m_progInfoString));
+            Mem_Memset(m_progInfoString, 0, sizeof(m_progInfoString));
 
             if (hasName) {
-                strcat(m_progInfoString, app->name);
+                String_Strcat(m_progInfoString, app->name);
             } else {
-                strcat(m_progInfoString, app->path);
+                String_Strcat(m_progInfoString, app->path);
             }
 
             if (hasAuthor || hasVersion) {
-                strcat(m_progInfoString, "\n(");
+                String_Strcat(m_progInfoString, "\n(");
 
                 if (hasVersion) {
-                    strcat(m_progInfoString, "version ");
-                    strcat(m_progInfoString, app->version);
+                    String_Strcat(m_progInfoString, "version ");
+                    String_Strcat(m_progInfoString, app->version);
                 }
 
                 if (hasAuthor) {
                     if (hasVersion) {
-                        strcat(m_progInfoString, " by ");
+                        String_Strcat(m_progInfoString, " by ");
                     } else {
-                        strcat(m_progInfoString, "by ");
+                        String_Strcat(m_progInfoString, "by ");
                     }
 
-                    strcat(m_progInfoString, app->author);
+                    String_Strcat(m_progInfoString, app->author);
                 }
 
-                strcat(m_progInfoString, ")");
+                String_Strcat(m_progInfoString, ")");
             }
 
             if (hasName) {
-                strcat(m_progInfoString, "\n(from ");
-                strcat(m_progInfoString, app->path);
-                strcat(m_progInfoString, ")");
+                String_Strcat(m_progInfoString, "\n(from ");
+                String_Strcat(m_progInfoString, app->path);
+                String_Strcat(m_progInfoString, ")");
             }
 
             if (hasDescription) {
-                strcat(m_progInfoString, "\n\n");
-                strcat(m_progInfoString, app->description);
+                String_Strcat(m_progInfoString, "\n\n");
+                String_Strcat(m_progInfoString, app->description);
             }
 
         // App Name (version 1.0.0 by Meme King)

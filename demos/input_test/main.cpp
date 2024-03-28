@@ -66,7 +66,7 @@ void main() {
 	LCD_Refresh();
 
 	while (running) {
-		memset(&event, 0, sizeof(event));
+		Mem_Memset(&event, 0, sizeof(event));
 		GetInput(&event, 0xFFFFFFFF, 0x10);
 
 		switch (event.type) {

@@ -9,21 +9,21 @@
  *
  * Example: reading 256 bytes from a file called @c test.txt from the USB flash
  * @code{cpp}
- * int fd = open("\\\\fls0\\test.txt", OPEN_READ);
+ * int fd = File_Open("\\\\fls0\\test.txt", FILE_OPEN_READ);
  * if (fd < 0) {
  *     // An error occurred calling open
  *     goto exit;
  * }
  *
  * uint8_t buf[256];
- * int ret = read(fd, buf, sizeof(buf));
+ * int ret = File_Read(fd, buf, sizeof(buf));
  * if (ret < 0) {
  *     // An error occurred calling read
- *     close(fd);
+ *     File_Close(fd);
  *     goto exit;
  * }
  *
- * ret = close(fd);
+ * ret = File_Close(fd);
  * if (ret < 0) {
  *     // An error occurred calling close
  * }
@@ -33,21 +33,21 @@
  *
  * Example: writing 16 bytes to a non-existant file called @c f.bin in a folder @c test in the USB flash
  * @code{cpp}
- * int fd = open("\\\\fls0\\test\\f.bin", OPEN_WRITE | OPEN_CREATE);
+ * int fd = File_Open("\\\\fls0\\test\\f.bin", FILE_OPEN_WRITE | FILE_OPEN_CREATE);
  * if (fd < 0) {
  *     // An error occurred calling open
  *     goto exit;
  * }
  *
  * uint8_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF};
- * int ret = write(fd, buf, sizeof(buf));
+ * int ret = File_Write(fd, buf, sizeof(buf));
  * if (ret < 0) {
  *     // An error occurred calling write
- *     close(fd);
+ *     File_Close(fd);
  *     goto exit;
  * }
  *
- * ret = close(fd);
+ * ret = File_Close(fd);
  * if (ret < 0) {
  *     // An error occurred calling close
  * }
@@ -64,127 +64,127 @@
  * Errors returned by file system functions. All negative numbers.
  * @{
  */
-const int ENOMEM = -1;
-const int EINVAL = -2;
-const int EDEVFAIL = -3;
-const int EMOUNTED = -4;
-const int EACCES = -5;
-const int EBADFSID = -6;
-const int ENOVOLUME = -7;
-const int ENOPATH = -8;
-const int EEXIST = -9;
-const int ENAMETOOLONG = -10;
-const int EOUTOFBOUND = -11;
-const int EUNFORMAT = -12;
-const int ENOSPC = -13;
-const int ENOENT = -14;
-const int EISDIRECTORY = -15;
-const int ESHARE = -16;
-const int EMFILE = -17;
-const int EBADF = -18;
-const int EEOF = -19;
-const int ENOTEMPTY = -20;
-const int ECLUSTERSIZEMISMATCH = -40;
-const int ESYSTEM = -99;
+const int FILE_ENOMEM = -1;
+const int FILE_EINVAL = -2;
+const int FILE_EDEVFAIL = -3;
+const int FILE_EMOUNTED = -4;
+const int FILE_EACCES = -5;
+const int FILE_EBADFSID = -6;
+const int FILE_ENOVOLUME = -7;
+const int FILE_ENOPATH = -8;
+const int FILE_EEXIST = -9;
+const int FILE_ENAMETOOLONG = -10;
+const int FILE_EOUTOFBOUND = -11;
+const int FILE_EUNFORMAT = -12;
+const int FILE_ENOSPC = -13;
+const int FILE_ENOENT = -14;
+const int FILE_EISDIRECTORY = -15;
+const int FILE_ESHARE = -16;
+const int FILE_EMFILE = -17;
+const int FILE_EBADF = -18;
+const int FILE_EEOF = -19;
+const int FILE_ENOTEMPTY = -20;
+const int FILE_ECLUSTERSIZEMISMATCH = -40;
+const int FILE_ESYSTEM = -99;
 /// @}
 
 /**
  * @defgroup lseek_whence_values lseek whence Values
- * Values passed as the @c whence parameter to @ref lseek.
+ * Values passed as the @c whence parameter to @ref File_Lseek.
  * @{
  */
 /// Set the file offset to @c offset.
-const int SEEK_SET = 0;
+const int FILE_SEEK_SET = 0;
 /// Set the file offset to the current position, plus @c offset bytes.
-const int SEEK_CUR = 1;
+const int FILE_SEEK_CUR = 1;
 ///Set the file offset to the end of the file, plus @c offset bytes.
-const int SEEK_END = 2;
+const int FILE_SEEK_END = 2;
 /// @}
 
 /**
  * @defgroup open_flags_values open flags Values
- * Values passed as the @c flags parameter to @ref open. Can be bitwise OR'd to
+ * Values passed as the @c flags parameter to @ref File_Open. Can be bitwise OR'd to
  * combine effects.
  * @{
  */
 /// Open the file as readable.
-const int OPEN_READ = 1 << 0;
+const int FILE_OPEN_READ = 1 << 0;
 /// Open the file as writable.
-const int OPEN_WRITE = 1 << 1;
+const int FILE_OPEN_WRITE = 1 << 1;
 /// Create the file, if it does not already exist.
-const int OPEN_CREATE = 1 << 2;
+const int FILE_OPEN_CREATE = 1 << 2;
 /// Opens the file with the file offset set to the end of the file.
-const int OPEN_APPEND = 1 << 4;
+const int FILE_OPEN_APPEND = 1 << 4;
 /// @}
 
 /**
- * Retrieves the year from a @c struct @ref stat date field.
+ * Retrieves the year from a @c struct @ref File_Stat date field.
  * 
- * @param date The date field from a @c struct @ref stat.
+ * @param date The date field from a @c struct @ref File_Stat.
  * @return The year encoded in the date field.
  */
-uint16_t constexpr statDateYear(uint16_t date) {
+uint16_t constexpr File_StatDateYear(uint16_t date) {
 	return ((date >> 9) & 0b1111111) + 1980;
 }
 
 /**
- * Retrieves the month from a @c struct @ref stat date field.
+ * Retrieves the month from a @c struct @ref File_Stat date field.
  * 
- * @param date The date field from a @c struct @ref stat.
+ * @param date The date field from a @c struct @ref File_Stat.
  * @return The month encoded in the date field.
  */
-uint16_t constexpr statDateMonth(uint16_t date) {
+uint16_t constexpr File_StatDateMonth(uint16_t date) {
 	return (date >> 5) & 0b1111;
 }
 
 /**
- * Retrieves the day from a @c struct @ref stat date field.
+ * Retrieves the day from a @c struct @ref File_stat date field.
  * 
- * @param date The date field from a @c struct @ref stat.
+ * @param date The date field from a @c struct @ref File_stat.
  * @return The day encoded in the date field.
  */
-uint16_t constexpr statDateDay(uint16_t date) {
+uint16_t constexpr File_StatDateDay(uint16_t date) {
 	return date & 0b11111;
 }
 
 /**
- * Retrieves the hour from a @c struct @ref stat time field.
+ * Retrieves the hour from a @c struct @ref File_Stat time field.
  * 
- * @param time The time field from a @c struct @ref stat.
+ * @param time The time field from a @c struct @ref File_Stat.
  * @return The hour encoded in the time field.
  */
-uint16_t constexpr statTimeHour(uint16_t time) {
+uint16_t constexpr File_StatTimeHour(uint16_t time) {
 	return (time >> 11) & 0b11111;
 }
 
 /**
- * Retrieves the minute from a @c struct @ref stat time field.
+ * Retrieves the minute from a @c struct @ref File_Stat time field.
  * 
- * @param time The time field from a @c struct @ref stat.
+ * @param time The time field from a @c struct @ref File_Stat.
  * @return The minute encoded in the time field.
  */
-uint16_t constexpr statTimeMinute(uint16_t time) {
+uint16_t constexpr File_StatTimeMinute(uint16_t time) {
 	return (time >> 5) & 0b111111;
 }
 
 /**
- * Retrieves the second from a @c struct @ref stat time field.
+ * Retrieves the second from a @c struct @ref File_Stat time field.
  * 
  * Has a maximum resolution of 2 seconds.
  * 
- * @param time The time field from a @c struct @ref stat.
+ * @param time The time field from a @c struct @ref File_Stat.
  * @return The second encoded in the time field.
  */
-uint16_t constexpr statTimeSecond(uint16_t time) {
+uint16_t constexpr File_StatTimeSecond(uint16_t time) {
 	return (time & 0b11111) * 2;
 }
 
 /**
- * Information about a file as retrieved from @ref fstat or @ref stat.
+ * Information about a file as retrieved from @ref File_Fstat or @ref File_Stat.
  * 
  * Dates and times are stored as a bitfield. The values they represent can be
- * accessed using the @ref statDateYear, @ref statDateMonth, @ref statDateDay,
- * @ref statTimeHour, @ref statTimeMinute, and @ref statTimeSecond helper
+ * accessed using the @ref File_StatDateYear, @ref File_StatDateMonth, @ref File_StatDateDay,
+ * @ref File_StatTimeHour, @ref File_StatTimeMinute, and @ref File_StatTimeSecond helper
  * functions.
  *
  * Dates are stored in the following format:
@@ -245,7 +245,7 @@ uint16_t constexpr statTimeSecond(uint16_t time) {
  *     </tr>
  * </table>
  */
-struct stat {
+struct File_Stat {
 	uint32_t unknown1;
 
 	/**
@@ -290,7 +290,7 @@ struct stat {
  * Information about a file/directory, as returned from @ref findFirst or
  * @ref findNext.
  */
-struct findInfo {
+struct File_FindInfo {
 	uint8_t unknown0[4];
 
 	/// The type of entry which was located.
@@ -317,7 +317,7 @@ struct findInfo {
  * @return 0 on success, or a negative error code on failure.
  */
 extern "C"
-int close(int fd);
+int File_Close(int fd);
 
 /**
  * Closes a find handle.
@@ -328,7 +328,7 @@ int close(int fd);
  * @return 0 on success, or a negative error code on failure.
  */
 extern "C"
-int findClose(int findHandle);
+int File_FindClose(int findHandle);
 
 /**
  * Starts a find operation, locating files matching a specific path.
@@ -337,9 +337,9 @@ int findClose(int findHandle);
  * example, passing the path @c L"\\fls0\\*" or @c L"\\fls0\\*.*" matches all
  * files and directories on the calculator's flash (not recursive, though).
  * 
- * To find the next file/directory which matches the path, call @ref findNext,
+ * To find the next file/directory which matches the path, call @ref File_FindNext,
  * passing in the find handle returned by this function. Ensure the find handle
- * is closed using @ref findClose when the find operation is finished. Bad
+ * is closed using @ref File_FindClose when the find operation is finished. Bad
  * things happen if the handle is not closed.
  * 
  * @param[in] path The path to search. May contain wildcards.
@@ -350,19 +350,19 @@ int findClose(int findHandle);
  * @return 0 on success, or a negative error code on failure.
  */
 extern "C"
-int findFirst(const wchar_t *path, int *findHandle, wchar_t *name, struct findInfo *findInfoBuf);
+int File_FindFirst(const wchar_t *path, int *findHandle, wchar_t *name, struct File_FindInfo *findInfoBuf);
 
 /**
  * Returns information about the next matching file/directory in a find
  * operation.
  * 
- * @param findHandle The find handle returned from @ref findFirst.
+ * @param findHandle The find handle returned from @ref File_FindFirst.
  * @param[out] name The name of the file/directory found.
  * @param[out] findInfoBuf Information about the found file.
  * @return 0 on success, or a negative error code on failure.
  */
 extern "C"
-int findNext(int findHandle, wchar_t *name, struct findInfo *findInfoBuf);
+int File_FindNext(int findHandle, wchar_t *name, struct File_FindInfo *findInfoBuf);
 
 /**
  * Retrieves information about an open file.
@@ -372,13 +372,13 @@ int findNext(int findHandle, wchar_t *name, struct findInfo *findInfoBuf);
  * @return 0 on success, or a negative error code on failure.
  */
 extern "C"
-int fstat(int fd, struct stat *buf);
+int File_Fstat(int fd, struct File_Stat *buf);
 
 /**
  * Retrieves the memory address of a file.
  *
  * If the file is empty or the offset would point outside of the file,
- * @c EINVAL is returned.
+ * @c FILE_EINVAL is returned.
  *
  * @param fd The file descriptor of an open file.
  * @param offset An offset to apply to the pointer to the file's data.
@@ -386,7 +386,7 @@ int fstat(int fd, struct stat *buf);
  * @return 0 on success, or a negative error code on failure.
  */
 extern "C"
-int getAddr(int fd, int offset, const void **addr);
+int File_GetAddr(int fd, int offset, const void **addr);
 
 /**
  * Repositions the file offset of the file descriptor. The new position depends
@@ -398,7 +398,7 @@ int getAddr(int fd, int offset, const void **addr);
  * @return The new file offset on success, or a negative error code on failure.
  */
 extern "C"
-int lseek(int fd, int offset, int whence);
+int File_Lseek(int fd, int offset, int whence);
 
 /**
  * Creates a directory.
@@ -407,7 +407,7 @@ int lseek(int fd, int offset, int whence);
  * @return 0 on success, or a negative error code on failure.
  */
 extern "C"
-int mkdir(const char *path);
+int File_Mkdir(const char *path);
 
 /**
  * Opens a file on the file system.
@@ -420,7 +420,7 @@ int mkdir(const char *path);
  * @return A file descriptor on success, or a negative error code on failure.
  */
 extern "C"
-int open(const char *path, int flags);
+int File_Open(const char *path, int flags);
 
 /**
  * Reads up to @c count bytes from a file, and stores them in @c buf.
@@ -435,7 +435,7 @@ int open(const char *path, int flags);
  * failure.
  */
 extern "C"
-int read(int fd, void *buf, int count);
+int File_Read(int fd, void *buf, int count);
 
 /**
  * Deletes a file or directory.
@@ -444,7 +444,7 @@ int read(int fd, void *buf, int count);
  * @return 0 on success, or a negative error code on failure.
  */
 extern "C"
-int remove(const char *path);
+int File_Remove(const char *path);
 
 /**
  * Renames a file or directory.
@@ -454,7 +454,7 @@ int remove(const char *path);
  * @return 0 on success, or a negative error code on failure.
  */
 extern "C"
-int rename(const char *oldPath, const char *newPath);
+int File_Rename(const char *oldPath, const char *newPath);
 
 /**
  * Retrieves information about a file.
@@ -464,7 +464,7 @@ int rename(const char *oldPath, const char *newPath);
  * @return 0 on success, or a negative error code on failure.
  */
 extern "C"
-int stat(const char *path, struct stat *buf);
+int File_Stat(const char *path, struct File_Stat *buf);
 
 /**
  * Writes @c count bytes from @c buf to a file.
@@ -476,4 +476,4 @@ int stat(const char *path, struct stat *buf);
  * failure.
  */
 extern "C"
-int write(int fd, const void *buf, int count);
+int File_Write(int fd, const void *buf, int count);
