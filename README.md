@@ -21,7 +21,7 @@ My intention was to modify it a little. I changed the following things:
 
 # Compatibility
 Hollyhock is compatible with the fx-CP400, fx-CP400+E and fx-CG500.  
-As of 2024, new fx-CP400 revisions (maybe fx-CP400+E and fx-CG500 too?) started to show up. These calculators do not boot on OSes older than v2.01.7002, such as 2.01.2000 (which is used by hollycock). Please follow at least one of the following procedures to ensure you have a compatible model before installing.
+As of 2024, new fx-CP400 hardware revisions (maybe fx-CP400+E and fx-CG500 too?) started to show up. These calculators do not boot on OSes older than v2.01.7002, such as 2.01.2000 (which is used by hollycock). Please follow at least one of the following procedures to ensure you have a compatible model before installing.
 
 ### ABS_Date
 - With your calculator powered off, open the debug menu by pressing and holding [=] + [EXP] + [Clear/ON] until you see a "Factory use only" screen
