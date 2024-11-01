@@ -11,16 +11,65 @@ My intention was to modify it a little. I changed the following things:
 - Backslash: I will change the backslash character from the symbol `¥` to the symbol `\`.
 
 # DISCLAIMER
-- I AM NOT RESPONSIBLE FOR ANY DAMAGE YOU MAY DO TO YOUR fx-CP400.  
+- I AM NOT RESPONSIBLE FOR ANY DAMAGE YOU MAY DO TO YOUR CALCULATOR (fx-CP400, fx-CP400+E, fx-CG500 or whatever other model).  
 - I AM NOT LIABLE IF YOU BRICK OR OTHERWISE DAMAGE YOUR CALCULATOR.  
 - CASIO WILL NOT FIX YOUR CALCULATOR IF IT SHOWS EVIDENCE OF TAMPERING, I.E. FLASHING WITH MODIFIED FIRMWARE IMAGES OR MESSING WITH DEBUG MENUS.  
 - I WILL NOT FIX YOUR CALCULATOR.  
 - IF YOU CANNOT FIX YOUR CALCULATOR YOURSELF, DO NOT USE THIS TOOLKIT.  
 - **BY USING THESE TOOLS, YOU AGREE TO TAKE FULL RESPONSIBILITY FOR ANY DAMAGE THAT MAY OCCUR.**  
-- **YOU HAVE BEEN WARNED**
+- **YOU HAVE BEEN WARNED**.
+
+# Compatibility
+Hollyhock is compatible with the fx-CP400, fx-CP400+E and fx-CG500.  
+As of 2024, new fx-CP400 revisions (maybe fx-CP400+E and fx-CG500 too?) started to show up. These calculators do not boot on OSes older than v2.01.7002, such as 2.01.2000 (which is used by hollycock). Please follow at least one of the following procedures to ensure you have a compatible model before installing.
+
+### ABS_Date
+- With your calculator powered off, open the debug menu by pressing and holding [=] + [EXP] + [Clear/ON] until you see a "Factory use only" screen
+- Quickly press [z] + [left] before the screen disappears
+- At the bottom of the screen, you should see your `ABS_Date`listed
+- Quickly take note of it or take a picture, as this screen will disappear afteer a few seconds
+- Your `OS_Date` is not important here
+- Calculators with an `ABS_Date` of `2012/09/04 15:11` are known to work with older OS versions and Hollyhock
+- Calculators with an `ABS_Date` of `2022/10/28 13:16` are known to boot to a black screen on OS versions older than `2.01.7002`, and therefore will not work with Hollyhock for now
+- If your calculator has an ABS_Date different from those, it's something we haven't seen yet and would love to hear about!
+
+### Serial Number
+After a bit of research with affected calculators, we've noticed a pattern in their serial numbers  
+- Calculators with a new serial number format (starting with `L777A` or `C805A`, with an _Ex (x being a number) suffix in the end) should check their serial numbers second to last digit before the _Ex suffix
+  - Calculators which have a `C` there seem to always have an ABS_Date of 2022, and they don't work on OSes older than 2.01.7002. That means no hollyhock on them for now
+  - Calculators which have a `B` there seem to always have a 2012 ABS_Date, and should work with hollyhock
+- Calculators with an old serial number format (starting with `777A`, `805A` or `804A`, no suffix) seem to always have a 2012 ABS_Date, and should work with hollyhock
+- The serial number is located in a label near the batteries, you need to remove the battery cover to find it
+- If your serial number doesn't fit any of the above categories, it's something we haven't seen yet and would love to hear about!
+
+Examples:
+```plaintext
+Known uncomopatible SNs:
+- L777A*******5CB_E4
+- L777A*******0CE_E0
+- L777A*******8CB_E3
+- L777A*******9CE_E0
+
+Known compatible SNs:
+- L777A*******3BA_E3
+- C805A*******3BA_E2
+- 777A**********2
+- 804A**********6
+```
+
+### Notes
+- If you install an OS older than 2.01.7002, hollyhock or not, on a 2022 ABS_Date calculator, it'll show nothing on the screen - it'll remain black when you try to turn it on
+  - At this state, update mode and the OS Error screen should still work normally. On the calculator hold down the `EXP`, `^` and `Clear` keys. With those keys pressed, momentarily press the RESET button on the back of the calculator. Keep the three front buttons pressed until the screen displays the `OS ERROR` message.
+    - You may need to remove the batteries and put them back in in order for this to work
+    - There have been reports that adding `Shift` to the above key combination may work to get to the OS Error screen if the normal key combo doesn't work
+  - At this point, you can download the latest official updater from CASIO and use it to update your calculator. Updating to 2.01.7002 is confirmed to make the calculator work again.
+- No matter what, by installing hollyhock, upgrading or downgrading the OS of your calculator or even just following the above procedures to check the ABS_Date, you do so at your own risk. YOU AGREE TO TAKE FULL RESPONSIBILITY FOR ANY DAMAGE THAT MAY OCCUR.
+- It would be really helpful if you could submit your calculators serial number and ABS_Date (on the comments field) to [MyCalcs](https://my.calcs.quest/), specially if it's one of the 2022 ABS_Date models (but actually no matter your model), and let us know!
+  
 
 # Installation (simple)
 This is how you install hollyhock-2 onto your calculator:
+- check the compatibility section above to ensure your calculator is compatible
 - download the newest prebuild release of hollyhock-2: https://github.com/SnailMath/hollyhock-2/releases
 - copy the folder Snail2021 from the .zip file in the release onto the desktop.
 - open the folder Snail2021 on the desktor and double click on Snail2021.exe
@@ -55,9 +104,10 @@ I (@The6P4C) have burned out *hard* on this project, and won't be maintaining it
 ~~Please contact @ps100000 regarding this project.~~ If you have any questions, you can visit our discord https://discord.gg/y8Mr8tD or comment on YouTube.
 
 ## User Guides
-1. [Install hollyhock-2](#installation-simple)
-2. [Using add-on software](doc/user/using.md)
-3. [Developing applications](doc/user/developing.md)
-4. [Writing programs without a PC](doc/user/exec.md)
-5. [Patching your firmware (from source)](doc/user/patching.md) (complicated, you do not need this, just scroll up to section [Install](#installation-simple)
+1. [Compatibility](#Compatibility)
+2. [Install hollyhock-2](#installation-simple)
+3. [Using add-on software](doc/user/using.md)
+4. [Developing applications](doc/user/developing.md)
+5. [Writing programs without a PC](doc/user/exec.md)
+6. [Patching your firmware (from source)](doc/user/patching.md) (complicated, you do not need this, just scroll up to section [Install](#installation-simple)
 
