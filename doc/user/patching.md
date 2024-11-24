@@ -44,7 +44,7 @@ make
 sudo make install
 ```
 
-You'll now have tools such as `sh4-elf-as` and `sh4-elf-objcopy` available.
+You'll now have tools such as `sh4aeb-elf-objcopy` available.
 
 Now, download the most recent stable version of the GCC source code from the [GCC website](https://gnu.org/software/gcc/). Extract the compressed file containing the source code into a directory, and `cd` into the newly created directory. Then, run these commands inside that directory. Be warned - the `make` commands may take a long time, depending on your system, and the `contrib/download_prerequisites` script will download about 30 MB of archives. (SnailMath is using version 10.2.0)
 
@@ -60,7 +60,7 @@ sudo make install-target-libgcc
 ```
 (Note: The `--with-multilib-list=m4-nofpu` flag is needed because the cpu doesn't have an fpu)
 
-You’ll now have `sh4-elf-gcc` and `sh4-elf-g++` available for your usage.
+You’ll now have `sh4aeb-elf-g++` available for your usage.
 
 _I would recommend adding `export PATH="$PATH:$HOME/opt/cross/bin"` to the file .bashrc in the home directory to add the path automatically after every login._
 _I would recommend adding `export SDK_DIR="PATH-TO/hollyhock-2/sdk"` to the file .bashrc in the home directory to export the sdk dir automatically after every login._
