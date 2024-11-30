@@ -68,7 +68,7 @@ namespace Execs {
 			if ( *(directoryEntry+16) == 0x47 ) {
 
 				struct ExecInfo exec;
-				memset(&exec, 0, sizeof(exec));
+				Mem_Memset(&exec, 0, sizeof(exec));
 				
 				for(int i = 0; i<8 ; i++){
 					exec.fileName[i]=*(directoryEntry+i);

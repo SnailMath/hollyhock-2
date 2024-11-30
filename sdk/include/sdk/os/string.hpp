@@ -7,16 +7,16 @@
 #pragma once
 
 extern "C"
-char *strcat(char *dest, const char *src);
+char *String_Strcat(char *dest, const char *src);
 
 extern "C"
-const char *strchr(const char *str, char c);
+const char *String_Strchr(const char *str, char c);
 
 extern "C"
-int strcmp(const char *str1, const char *str2);
+int String_Strcmp(const char *str1, const char *str2);
 
 extern "C"
-char *strcpy(char *destination, const char *source);
+char *String_Strcpy(char *destination, const char *source);
 
 extern "C"
-int strlen(const char *str);
+int String_Strlen(const char *str);
