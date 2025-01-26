@@ -52,10 +52,13 @@ Known uncomopatible SNs:
 
 Known compatible SNs:
 - L777A*******3BA_E3
+- L777A*******9BA_E2
 - C805A*******3BA_E2
 - 777A**********2
 - 804A**********6
 ```
+
+(if unsure, check the ABS_Date version)
 
 ### Notes
 - If you install an OS older than 2.01.7002, hollyhock or not, on a 2022 ABS_Date calculator, it'll show nothing on the screen - it'll remain black when you try to turn it on
