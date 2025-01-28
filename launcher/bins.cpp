@@ -25,22 +25,22 @@ public:
 
 	~File() {
 		if (m_opened) {
-			close(m_fd);
+			File_Close(m_fd);
 		}
 	}
 
 	int open(const char *path, int flags) {
-		m_fd = ::open(path, flags);
+		m_fd = ::File_Open(path, flags);
 		m_opened = true;
 		return m_fd;
 	}
 
 	int getAddr(int offset, const void **addr) {
-		return ::getAddr(m_fd, offset, addr);
+		return ::File_GetAddr(m_fd, offset, addr);
 	}
 
 	int read(void *buf, int count) {
-		return ::read(m_fd, buf, count);
+		return ::File_Read(m_fd, buf, count);
 	}
 
 private:
@@ -56,18 +56,18 @@ public:
 
 	~Find() {
 		if (m_opened) {
-			findClose(m_findHandle);
+			File_FindClose(m_findHandle);
 		}
 	}
 
-	int findFirst(const wchar_t *path, wchar_t *name, struct findInfo *findInfoBuf) {
-		int ret = ::findFirst(path, &m_findHandle, name, findInfoBuf);
+	int findFirst(const wchar_t *path, wchar_t *name, struct File_FindInfo *findInfoBuf) {
+		int ret = ::File_FindFirst(path, &m_findHandle, name, findInfoBuf);
 		m_opened = true;
 		return ret;
 	}
 
-	int findNext(wchar_t *name, struct findInfo *findInfoBuf) {
-		return ::findNext(m_findHandle, name, findInfoBuf);
+	int findNext(wchar_t *name, struct File_FindInfo *findInfoBuf) {
+		return ::File_FindNext(m_findHandle, name, findInfoBuf);
 	}
 
 private:
@@ -87,7 +87,7 @@ namespace Bins {
 
 	void LoadApp(const char *folder, wchar_t *fileName) {
 		struct AppInfo app;
-		memset(&app, 0, sizeof(app));
+		Mem_Memset(&app, 0, sizeof(app));
 
 		// copy the file name (converting to a non-wide string in the
 		// process)
@@ -101,11 +101,11 @@ namespace Bins {
 
 		// build the path
 		//strcat(app.path, "\\fls0\\");
-		strcat(app.path, folder);
-		strcat(app.path, app.fileName);
+		String_Strcat(app.path, folder);
+		String_Strcat(app.path, app.fileName);
 
 		File f;
-		int ret = f.open(app.path, OPEN_READ);
+		int ret = f.open(app.path, FILE_OPEN_READ);
 		if (ret < 0) {
 			return;
 		}
@@ -135,7 +135,7 @@ namespace Bins {
 			Find find;
 
 			wchar_t fileName[100];
-			struct findInfo findInfoBuf;
+			struct File_FindInfo findInfoBuf;
 
 			wchar_t findDir[100];
 			int i=0;
@@ -168,7 +168,7 @@ namespace Bins {
 		struct AppInfo *app = &g_apps[i];
 
 		File f;
-		int ret = f.open(app->path, OPEN_READ);
+		int ret = f.open(app->path, FILE_OPEN_READ);
 		if (ret < 0) {
 		    return nullptr;
 		}

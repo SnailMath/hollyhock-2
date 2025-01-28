@@ -26,7 +26,7 @@ GUIDialog::GUIDialog(
 	m_oldVTable = GetWrapped<GUIDialog_Wrapped>()->vtable;
 
 	// Copy the pre-existing vtable
-	memcpy(&m_vtable, GetWrapped<GUIDialog_Wrapped>()->vtable, sizeof(m_vtable));
+	Mem_Memcpy(&m_vtable, GetWrapped<GUIDialog_Wrapped>()->vtable, sizeof(m_vtable));
 
 	m_vtable.me = this;
 	m_vtable.OnEvent.func = reinterpret_cast<decltype(m_vtable.OnEvent.func)>(OnEvent_Wrap);
